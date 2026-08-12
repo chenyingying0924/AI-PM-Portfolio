@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI出海内容增长助手 Agent</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <span class="brand-mark"><i data-lucide="sparkles"></i></span>
+        <div class="brand-text">
+          <strong>AI出海内容增长助手</strong>
+          <span>Agent</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="workbench">
+          <i data-lucide="layout-dashboard"></i><span>工作台</span>
+        </button>
+        <button class="nav-item" data-view="brand">
+          <i data-lucide="library-big"></i><span>品牌知识库</span>
+        </button>
+        <button class="nav-item" data-view="vault">
+          <i data-lucide="flame"></i><span>爆款库</span>
+        </button>
+        <button class="nav-item" data-view="records">
+          <i data-lucide="file-text"></i><span>内容记录</span>
+        </button>
+      </nav>
+      <div class="pipeline-card">
+        <div class="pipeline-title">
+          <i data-lucide="workflow"></i><span>Agent运行</span>
+        </div>
+        <div class="pipeline-stage" id="pipelineStage">待命</div>
+        <div class="pipeline-bar"><span id="pipelineBar"></span></div>
+        <div class="agent-log" id="agentLog">
+          <div class="log-empty">等待任务</div>
+        </div>
+      </div>
+      <div class="brand-mini">
+        <span>当前品牌</span>
+        <strong id="miniBrandName">Aurora</strong>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="view-title">
+          <span id="viewTitle">Agent工作台</span>
+          <span class="engine-chip">MVP模拟引擎</span>
+        </div>
+        <div class="top-actions">
+          <button class="btn ghost" id="exportBtn" title="导出JSON">
+            <i data-lucide="download"></i><span>导出JSON</span>
+          </button>
+          <button class="btn" id="newTaskBtn" title="新建任务">
+            <i data-lucide="plus"></i><span>新建任务</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="view active" id="view-workbench">
+        <div class="stepper">
+          <button class="step active" data-step="1"><span class="step-num">01</span>爆款拆解</button>
+          <div class="step-line"></div>
+          <button class="step" data-step="2"><span class="step-num">02</span>内容重写</button>
+          <div class="step-line"></div>
+          <button class="step" data-step="3"><span class="step-num">03</span>质量评估</button>
+          <div class="step-line"></div>
+          <button class="step" data-step="4"><span class="step-num">04</span>交付确认</button>
+        </div>
+
+        <div class="panel active" id="panel-1">
+          <div class="panel-grid">
+            <div class="panel-left">
+              <div class="field">
+                <label for="sourceInput">竞品文案 / 视频脚本</label>
+                <textarea id="sourceInput" spellcheck="false">Stop waiting 15 minutes for coffee. This pocket espresso machine pulls a shot in 20 seconds, fits in your backpack, and works anywhere. No more expensive cafe lines. #coffee #workfromanywhere</textarea>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="sourcePlatform">来源平台</label>
+                  <select id="sourcePlatform">
+                    <option value="TikTok">TikTok</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="YouTube Shorts">YouTube Shorts</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="sourceAccount">账号类型</label>
+                  <select id="sourceAccount">
+                    <option value="DTC品牌">DTC品牌</option>
+                    <option value="生活博主">生活博主</option>
+                    <option value="测评账号">测评账号</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn primary block" id="teardownBtn">
+                <i data-lucide="scan-search"></i><span>开始拆解</span>
+              </button>
+            </div>
+            <div class="panel-right">
+              <div class="empty-state" id="teardownEmpty">
+                <i data-lucide="scan-search"></i>
+                <p>等待拆解任务</p>
+              </div>
+              <div class="teardown-output hidden" id="teardownOutput">
+                <div class="output-head">
+                  <div>
+                    <span class="mini-label">拆解结果</span>
+                    <h2 id="teardownTitle">爆款结构分析</h2>
+                  </div>
+                  <div class="output-actions">
+                    <span class="status-chip status-ok" id="teardownStatus">分析完成</span>
+                    <button class="btn ghost sm" id="saveTeardownBtn">
+                      <i data-lucide="save"></i><span>存入爆款库</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="out-grid">
+                  <div class="out-card">
+                    <h3>用户画像</h3>
+                    <ul id="outProfile"></ul>
+                  </div>
+                  <div class="out-card">
+                    <h3>内容结构</h3>
+                    <ul id="outStructure"></ul>
+                  </div>
+                  <div class="out-card">
+                    <h3>情绪触发点</h3>
+                    <ul id="outEmotion"></ul>
+                  </div>
+                  <div class="out-card">
+                    <h3>核心卖点</h3>
+                    <ul id="outSelling"></ul>
+                  </div>
+                  <div class="out-card wide">
+                    <h3>爆款原因</h3>
+                    <ul id="outReason"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-2">
+          <div class="panel-grid">
+            <div class="panel-left">
+              <div class="field-row">
+                <div class="field">
+                  <label>目标市场</label>
+                  <div class="market-picker" id="rewriteMarkets"></div>
+                </div>
+                <div class="field">
+                  <label for="rewritePlatform">目标平台</label>
+                  <select id="rewritePlatform">
+                    <option value="TikTok">TikTok</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="YouTube Shorts">YouTube Shorts</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label>变体数量</label>
+                <div class="segmented" id="variantCount">
+                  <button class="seg active" data-value="2">2个</button>
+                  <button class="seg" data-value="3">3个</button>
+                </div>
+              </div>
+              <button class="btn primary block" id="rewriteBtn" disabled>
+                <i data-lucide="wand"></i><span>生成变体</span>
+              </button>
+            </div>
+            <div class="panel-right">
+              <div class="empty-state" id="rewriteEmpty">
+                <i data-lucide="wand"></i>
+                <p>先完成爆款拆解</p>
+              </div>
+              <div class="result-summary hidden" id="variantSummary"></div>
+              <div class="variant-list hidden" id="variantList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-3">
+          <div class="panel-grid">
+            <div class="panel-left">
+              <div class="field">
+                <label for="evalVariant">待评估内容</label>
+                <select id="evalVariant"></select>
+              </div>
+              <div class="field">
+                <label for="evalPlatform">评估平台</label>
+                <select id="evalPlatform">
+                  <option value="TikTok">TikTok</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="YouTube Shorts">YouTube Shorts</option>
+                </select>
+              </div>
+              <button class="btn primary block" id="evalBtn" disabled>
+                <i data-lucide="gauge"></i><span>开始评估</span>
+              </button>
+            </div>
+            <div class="panel-right">
+              <div class="empty-state" id="evalEmpty">
+                <i data-lucide="gauge"></i>
+                <p>选择内容后评估</p>
+              </div>
+              <div class="eval-output hidden" id="evalOutput">
+                <div class="score-grid" id="scoreGrid"></div>
+                <div class="eval-detail" id="evalDetail"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-4">
+          <div class="handoff-grid">
+            <div class="handoff-card">
+              <span class="mini-label">待确认内容</span>
+              <h2 id="handoffTitle">暂无内容</h2>
+              <p id="handoffBody">完成评估后生成交付摘要</p>
+            </div>
+            <div class="handoff-meta">
+              <div class="meta-row"><span>品牌</span><strong id="handoffBrand">Aurora</strong></div>
+              <div class="meta-row"><span>市场</span><strong id="handoffMarket">-</strong></div>
+              <div class="meta-row"><span>平台</span><strong id="handoffPlatform">-</strong></div>
+              <div class="meta-row"><span>评分</span><strong id="handoffScore">-</strong></div>
+            </div>
+          </div>
+          <div class="deliver-actions">
+            <button class="btn primary" id="approveBtn" disabled>
+              <i data-lucide="circle-check"></i><span>确认交付</span>
+            </button>
+            <button class="btn ghost" id="copyBtn" disabled>
+              <i data-lucide="copy"></i><span>复制内容</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-brand">
+        <div class="brand-view-grid">
+          <div class="brand-form">
+            <div class="field">
+              <label for="brandName">品牌名称</label>
+              <input id="brandName" value="Aurora">
+            </div>
+            <div class="field">
+              <label for="brandPositioning">品牌定位</label>
+              <input id="brandPositioning" value="为都市通勤族设计的便携随行咖啡机">
+            </div>
+            <div class="field">
+              <label for="brandAudience">目标人群</label>
+              <input id="brandAudience" value="25至35岁通勤白领、露营与旅行爱好者">
+            </div>
+            <div class="field">
+              <label for="brandTone">品牌语气</label>
+              <textarea id="brandTone" spellcheck="false">简洁、真实、带一点幽默；不夸大功效，不用绝对化表达。</textarea>
+            </div>
+            <button class="btn primary" id="saveBrandBtn">
+              <i data-lucide="save"></i><span>保存品牌知识</span>
+            </button>
+          </div>
+          <div class="brand-knowledge">
+            <div class="knowledge-card">
+              <div class="knowledge-head">
+                <h3>产品卖点</h3>
+                <button class="icon-btn" id="addSellingBtn" title="新增卖点"><i data-lucide="plus"></i></button>
+              </div>
+              <div class="chip-list" id="sellingList"></div>
+            </div>
+            <div class="knowledge-card">
+              <div class="knowledge-head">
+                <h3>目标市场</h3>
+              </div>
+              <div class="chip-list" id="marketList"></div>
+            </div>
+            <div class="knowledge-card">
+              <div class="knowledge-head">
+                <h3>品牌禁忌</h3>
+                <button class="icon-btn" id="addTabooBtn" title="新增禁忌"><i data-lucide="plus"></i></button>
+              </div>
+              <div class="chip-list" id="tabooList"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-vault">
+        <div class="vault-head">
+          <h2>爆款结构库</h2>
+          <span class="count-chip" id="vaultCount">0个模板</span>
+        </div>
+        <div class="vault-grid" id="vaultList"></div>
+      </section>
+
+      <section class="view" id="view-records">
+        <div class="vault-head">
+          <h2>内容记录</h2>
+          <span class="count-chip" id="recordCount">0条内容</span>
+        </div>
+        <div class="records-list" id="recordList"></div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="vendor/lucide.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

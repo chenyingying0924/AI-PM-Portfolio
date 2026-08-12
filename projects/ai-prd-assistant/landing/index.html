@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PRD Copilot · AI Product Manager Agent</title>
+  <style>
+    :root {
+      --bg: #eaf6fc;
+      --surface: #ffffff;
+      --surface-2: #f2f9fc;
+      --surface-3: #dceef6;
+      --ink: #26333d;
+      --muted: #64747f;
+      --dim: #9fb0bb;
+      --border: rgba(38, 51, 61, .10);
+      --border-strong: rgba(38, 51, 61, .16);
+      --sky: #b0d2de;
+      --sky-2: #5f9db8;
+      --navy: #3f6c82;
+      --warm: #f3a479;
+      --sky-soft: rgba(176, 210, 222, .24);
+      --warm-soft: rgba(243, 164, 121, .16);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: clip;
+    }
+    .wrap { width: min(1160px, 100%); margin: 0 auto; padding: 0 24px; }
+    .nav { position: sticky; top: 0; z-index: 20; background: rgba(234, 246, 252, .86); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 9px; font-weight: 900; text-decoration: none; color: var(--ink); }
+    .mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--sky-2), var(--warm)); display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 700; }
+    .nav-links a:hover { color: var(--navy); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 10px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid transparent; white-space: nowrap; }
+    .btn-primary { background: linear-gradient(90deg, var(--sky-2), var(--warm)); color: #fff; box-shadow: 0 6px 18px rgba(95, 157, 184, .2); }
+    .btn-ghost { background: var(--surface); border-color: var(--border-strong); color: var(--ink); }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 48px; align-items: center; padding: 72px 0 84px; }
+    .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .14em; color: var(--sky-2); text-transform: uppercase; }
+    .hero h1 { font-size: clamp(38px, 5.4vw, 60px); line-height: 1.06; letter-spacing: -.03em; margin-top: 16px; }
+    .hero p { color: var(--muted); font-size: 15px; margin-top: 18px; max-width: 560px; }
+    .hero-actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+    .hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; box-shadow: 0 18px 50px rgba(63, 108, 130, .12); }
+    .hero-card h3 { font-size: 14px; margin-bottom: 10px; }
+    .shot { width: 100%; border-radius: 12px; margin-top: 14px; border: 1px solid var(--border); }
+    .agents { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+    .agent { border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: var(--surface-2); }
+    .agent b { font-size: 11px; color: var(--navy); }
+    .agent span { display: block; color: var(--muted); font-size: 9px; margin-top: 3px; }
+    .section { padding: 84px 0; border-top: 1px solid var(--border); }
+    .section h2 { font-size: clamp(28px, 4vw, 42px); letter-spacing: -.02em; max-width: 720px; }
+    .section > .wrap > p { color: var(--muted); max-width: 640px; margin-top: 14px; }
+    .pain-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 32px; }
+    .pain-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+    .pain-card b { font-size: 13px; color: var(--navy); }
+    .pain-card p { color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .workflow-steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 32px; }
+    .wf-step { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface); }
+    .wf-step b { font-size: 12px; color: var(--navy); }
+    .wf-step span { display: block; color: var(--muted); font-size: 10px; margin-top: 4px; }
+    .cap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 32px; }
+    .cap-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+    .cap-card b { font-size: 15px; color: var(--navy); }
+    .cap-card p { color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 32px; }
+    .metric { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+    .metric b { display: block; font-size: 24px; color: var(--sky-2); }
+    .metric span { color: var(--muted); font-size: 11px; }
+    .metric small { display: block; color: var(--dim); font-size: 10px; margin-top: 6px; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 32px; }
+    .pricing-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .pricing-card.highlight { border-color: var(--warm); background: linear-gradient(180deg, var(--warm-soft), var(--surface)); }
+    .pricing-card h3 { font-size: 14px; }
+    .price { font-size: 30px; font-weight: 900; margin: 8px 0; }
+    .price span { font-size: 12px; color: var(--muted); font-weight: 600; }
+    .pricing-card ul { list-style: none; margin: 12px 0; display: flex; flex-direction: column; gap: 8px; }
+    .pricing-card li { color: var(--muted); font-size: 12px; padding-left: 16px; position: relative; }
+    .pricing-card li::before { content: ""; position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--warm); }
+    .cta-band { background: linear-gradient(135deg, var(--sky-2), var(--warm)); border-radius: 18px; padding: 52px; text-align: center; color: #fff; }
+    .cta-band h2 { font-size: clamp(28px, 4vw, 44px); letter-spacing: -.02em; }
+    .cta-band p { margin: 12px auto 0; max-width: 520px; opacity: .94; }
+    .cta-band a { display: inline-flex; margin-top: 24px; background: #fff; color: var(--sky-2); border-radius: 999px; padding: 12px 22px; text-decoration: none; font-weight: 800; font-size: 13px; }
+    .footer { padding: 36px 0; color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; padding: 48px 0 60px; }
+      .agents, .pain-grid, .workflow-steps, .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cap-grid, .pricing-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .agents, .pain-grid, .workflow-steps, .metrics { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top"><span class="mark">PC</span>PRD Copilot</a>
+      <nav class="nav-links">
+        <a href="#problem">问题</a>
+        <a href="#workflow">Agent工作流</a>
+        <a href="#capabilities">能力</a>
+        <a href="#pricing">定价</a>
+      </nav>
+      <a class="btn btn-primary" href="../index.html">打开原型</a>
+    </div>
+  </header>
+
+  <section class="wrap hero" id="top">
+    <div>
+      <span class="eyebrow">AI Product Manager Agent</span>
+      <h1>从需求发现到PRD评审，AI Agent完整协作。</h1>
+      <p>PRD Copilot是面向产品团队的AI需求分析与产品设计Agent，通过理解用户声音、业务目标和产品规范，自动完成需求洞察、方案设计、PRD生成和质量评审。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="../index.html">体验Agent原型</a>
+        <a class="btn btn-ghost" href="../docs/PRD-V2.0.html">查看PRD V2.0</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>五个Agent协作工作流</h3>
+      <div class="agents">
+        <div class="agent"><b>Research</b><span>需求洞察</span></div>
+        <div class="agent"><b>Requirement</b><span>需求分析</span></div>
+        <div class="agent"><b>Designer</b><span>功能设计</span></div>
+        <div class="agent"><b>Writer</b><span>PRD生成</span></div>
+        <div class="agent"><b>Review</b><span>质量评审</span></div>
+      </div>
+      <img class="shot" src="../assets/studio.png" alt="PRD Copilot原型截图">
+    </div>
+  </section>
+
+  <section class="section" id="problem">
+    <div class="wrap">
+      <h2>写PRD不是产品经理的核心工作。</h2>
+      <p>真正核心的是需求判断和产品决策，但大量时间被信息整理和文档排版消耗。</p>
+      <div class="pain-grid">
+        <div class="pain-card"><b>信息碎片化</b><p>访谈、会议、竞品资料分散，需求容易遗漏。</p></div>
+        <div class="pain-card"><b>重复整理成本高</b><p>同一份信息被反复整理、改写和排版。</p></div>
+        <div class="pain-card"><b>新人经验不足</b><p>缺少标准流程和模板，产出质量不稳定。</p></div>
+        <div class="pain-card"><b>PRD质量依赖个人</b><p>边界情况和验收标准因人而异。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="workflow">
+    <div class="wrap">
+      <h2>Agent Workflow：从输入素材到PRD评审。</h2>
+      <p>每个Agent都有明确输入、处理逻辑和输出结果，产品经理始终在环。</p>
+      <div class="workflow-steps">
+        <div class="wf-step"><b>输入素材</b><span>访谈/纪要/竞品</span></div>
+        <div class="wf-step"><b>Research</b><span>用户洞察</span></div>
+        <div class="wf-step"><b>Requirement</b><span>需求优先级</span></div>
+        <div class="wf-step"><b>Designer</b><span>功能方案</span></div>
+        <div class="wf-step"><b>Writer</b><span>PRD初稿</span></div>
+        <div class="wf-step"><b>Review</b><span>质量评分</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="capabilities">
+    <div class="wrap">
+      <h2>覆盖产品经理完整工作流。</h2>
+      <div class="cap-grid">
+        <div class="cap-card"><b>多源需求输入</b><p>支持访谈记录、会议纪要、竞品资料和用户反馈。</p></div>
+        <div class="cap-card"><b>AI需求洞察</b><p>Research Agent输出用户问题、场景和机会点。</p></div>
+        <div class="cap-card"><b>需求池管理</b><p>输出用户价值、业务价值和P0/P1/P2优先级。</p></div>
+        <div class="cap-card"><b>AI PRD Review</b><p>Review Agent输出问题、建议和质量评分。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="metrics">
+    <div class="wrap">
+      <h2>以有效PRD产出效率为核心指标。</h2>
+      <div class="metrics">
+        <div class="metric"><b>30秒内</b><span>PRD初稿生成时间</span><small>模拟验证指标</small></div>
+        <div class="metric"><b>85分+</b><span>PRD完整度评分</span><small>模拟验证指标</small></div>
+        <div class="metric"><b>4分+</b><span>用户满意度</span><small>模拟验证指标</small></div>
+        <div class="metric"><b>30%+</b><span>评审通过率提升</span><small>模拟验证指标</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="wrap">
+      <h2>适合不同规模产品团队。</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Starter</h3>
+          <div class="price">¥49<span>/月</span></div>
+          <ul><li>1个产品工作区</li><li>30次Agent生成</li><li>基础PRD模板</li></ul>
+          <a class="btn btn-ghost" href="../index.html">开始使用</a>
+        </div>
+        <div class="pricing-card highlight">
+          <h3>Growth</h3>
+          <div class="price">¥149<span>/月</span></div>
+          <ul><li>3个产品工作区</li><li>无限Agent生成</li><li>AI Review质量评分</li><li>导出Markdown/PDF</li></ul>
+          <a class="btn btn-primary" href="../index.html">开始使用</a>
+        </div>
+        <div class="pricing-card">
+          <h3>Scale</h3>
+          <div class="price">定制</div>
+          <ul><li>企业知识库</li><li>团队协作</li><li>与Jira/Notion打通</li></ul>
+          <a class="btn btn-ghost" href="../index.html">联系销售</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-bottom:72px">
+    <div class="cta-band">
+      <h2>让AI Agent成为产品经理的协作伙伴。</h2>
+      <p>打开可交互原型，输入需求素材，30秒内获得PRD初稿和AI评审结果。</p>
+      <a href="../index.html">打开Agent原型</a>
+    </div>
+    <footer class="footer">
+      <span>PRD Copilot · AI Product Manager Agent</span>
+      <span>陈莹莹 · AI产品经理作品集</span>
+    </footer>
+  </section>
+</body>
+</html>

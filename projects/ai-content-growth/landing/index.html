@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BrandPilot AI turns competitor content into localized social media assets that stay on brand.">
+  <title>BrandPilot AI | Localized social content, on brand</title>
+  <style>
+    /* finesse · register=brand · A=graphite+violet-signal · B=800/400 sans contrast
+     * C=sticky-scroll-stepper · D=gsap-scrolltrigger · E=control-room
+     * SOUL=7 SPECTACLE=5 DENSITY=4 */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .hero-copy, .hero-visual { animation: none !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .cta-scan { animation: none !important; opacity: .25 !important; }
+    }
+  </style>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="root"></div>
+  <script src="vendor/lucide.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="dist/bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>陈莹莹 · AI产品经理作品集</title>
+  <style>
+    :root {
+      --bg: #05070c;
+      --surface: #0b0e16;
+      --surface-2: #10141f;
+      --ink: #f2f4ff;
+      --muted: #9aa3b8;
+      --dim: #5d6678;
+      --border: rgba(242, 244, 255, .1);
+      --violet: #8b7bff;
+      --cyan: #43d9ff;
+      --pink: #ff6bcb;
+      --lime: #b6f36b;
+      --gradient: linear-gradient(90deg, #8b7bff, #43d9ff, #ff6bcb);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-width: 320px;
+      overflow-x: clip;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      opacity: .035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(139, 123, 255, .06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 123, 255, .06) 1px, transparent 1px);
+      background-size: 54px 54px;
+      animation: grid-move 18s linear infinite;
+      mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 20%, transparent 78%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 20%, transparent 78%);
+    }
+
+    @keyframes grid-move {
+      from { background-position: 0 0; }
+      to { background-position: 54px 54px; }
+    }
+
+    .page {
+      position: relative;
+      z-index: 5;
+      width: min(1160px, 100%);
+      margin: 0 auto;
+      padding: 64px 24px 48px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+      gap: 40px;
+      align-items: center;
+      padding: 28px 0 64px;
+    }
+
+    .status-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 12px;
+      background: rgba(11, 14, 22, .7);
+    }
+
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 12px rgba(182, 243, 107, .9);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .35; }
+    }
+
+    .name {
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 1.04;
+      letter-spacing: -.035em;
+      font-weight: 900;
+      margin-top: 22px;
+      overflow-wrap: anywhere;
+    }
+
+    .grad {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy p {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 620px;
+      margin-top: 18px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .tag {
+      border: 1px solid rgba(139, 123, 255, .32);
+      background: rgba(139, 123, 255, .1);
+      color: #c7c2ff;
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tag.cyan {
+      border-color: rgba(67, 217, 255, .32);
+      background: rgba(67, 217, 255, .08);
+      color: #a7ecff;
+    }
+
+    .tag.pink {
+      border-color: rgba(255, 107, 203, .32);
+      background: rgba(255, 107, 203, .08);
+      color: #ffc2e8;
+    }
+
+    .hero-panel {
+      border: 1px solid transparent;
+      border-radius: 14px;
+      background:
+        linear-gradient(var(--surface), var(--surface)) padding-box,
+        linear-gradient(135deg, rgba(139, 123, 255, .55), rgba(67, 217, 255, .35), rgba(255, 107, 203, .45)) border-box;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(from 90deg, transparent, rgba(67, 217, 255, .16), transparent 32%);
+      animation: spin 8s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hero-panel h3 {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .hero-panel p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .panel-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .panel-stat {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(11, 14, 22, .7);
+      padding: 14px;
+    }
+
+    .panel-stat b {
+      display: block;
+      font-size: 18px;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .panel-stat span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10.5px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 48px 0 20px;
+    }
+
+    .section-head h2 {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .project-card {
+      position: relative;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      background:
+        linear-gradient(var(--surface), var(--surface)) padding-box,
+        linear-gradient(135deg, rgba(139, 123, 255, .45), rgba(67, 217, 255, .28), rgba(255, 107, 203, .35)) border-box;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 50px rgba(67, 217, 255, .12), 0 8px 30px rgba(139, 123, 255, .12);
+    }
+
+    .project-card.featured {
+      grid-column: 1 / -1;
+      background:
+        linear-gradient(135deg, #10131f, #0b0e16 62%) padding-box,
+        linear-gradient(120deg, rgba(139, 123, 255, .7), rgba(67, 217, 255, .5), rgba(255, 107, 203, .6)) border-box;
+    }
+
+    .project-card h3 {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -.015em;
+    }
+
+    .project-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      color: #0a0c12;
+      background: var(--gradient);
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+
+    .badge.proposal {
+      background: linear-gradient(90deg, #ff6bcb, #b6f36b);
+    }
+
+    .stack {
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .link-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .link-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      background: rgba(11, 14, 22, .7);
+      text-decoration: none;
+      transition: border-color .2s ease, color .2s ease;
+    }
+
+    .link-chip:hover {
+      border-color: rgba(67, 217, 255, .5);
+      color: #a7ecff;
+    }
+
+    .link-chip svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .status {
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--lime);
+      border: 1px solid rgba(182, 243, 107, .3);
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .cap-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(11, 14, 22, .72);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cap-card svg {
+      width: 20px;
+      height: 20px;
+      color: var(--cyan);
+    }
+
+    .cap-card b {
+      font-size: 13px;
+    }
+
+    .cap-card span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: 64px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--dim);
+      font-size: 11px;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-card.featured {
+        grid-column: auto;
+      }
+
+      .cap-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 42px 18px 36px;
+      }
+
+      .name {
+        font-size: 38px;
+      }
+
+      .cap-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .grid-bg,
+      .hero-panel::after,
+      .pulse {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="status-line"><span class="pulse"></span>作品集在线可访问</div>
+        <h1 class="name">陈莹莹 <span class="grad">AI产品经理</span></h1>
+        <p>
+          计算机科学与技术本科在读，27届。擅长把用户痛点转化为AI产品需求，
+          从竞品研究、产品定义、Agent工作流设计到可交互原型与MVP验证，完整落地AI产品项目。
+        </p>
+        <div class="hero-tags">
+          <span class="tag">需求分析</span>
+          <span class="tag cyan">AI产品设计</span>
+          <span class="tag pink">Agent工作流</span>
+          <span class="tag cyan">Prompt工程</span>
+          <span class="tag">MVP验证</span>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <h3>作品集构成</h3>
+        <p>一个旗舰AI产品项目加两个补充AI原型，配合产品文档、可交互原型与商业化官网，证明从想法到落地的完整能力。</p>
+        <div class="panel-stats">
+          <div class="panel-stat"><b>01</b><span>旗舰AI项目</span></div>
+          <div class="panel-stat"><b>02</b><span>重点项目</span></div>
+          <div class="panel-stat"><b>03</b><span>完整案例</span></div>
+          <div class="panel-stat"><b>PRD</b><span>需求文档能力</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>项目案例</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="project-grid">
+        <article class="project-card featured">
+          <div class="project-meta">
+            <span class="badge">旗舰项目</span>
+            <span class="stack">AI Native · Agent Workflow · React原型</span>
+          </div>
+          <h3>AI出海内容增长助手 Agent</h3>
+          <p>
+            面向出海品牌团队的AI内容生产Agent：竞品爆款拆解、多市场批量生成、
+            品牌知识库约束、内容质量评估，覆盖从Brief到交付的完整闭环。
+          </p>
+          <div class="link-grid">
+            <a class="link-chip" href="projects/ai-content-growth/landing/index.html"><i data-lucide="layout-dashboard"></i>产品官网</a>
+            <a class="link-chip" href="projects/ai-content-growth/agent-app/index.html"><i data-lucide="mouse-pointer-click"></i>可交互原型</a>
+            <a class="link-chip" href="projects/ai-content-growth/portfolio/ai-overseas-content-agent.pdf"><i data-lucide="file-text"></i>20页PDF</a>
+            <a class="link-chip" href="projects/ai-content-growth/docs/PRD-AI出海内容增长助手-Agent.html"><i data-lucide="braces"></i>PRD</a>
+            <a class="link-chip" href="projects/ai-content-growth/docs/full-solution.html"><i data-lucide="book-open"></i>完整方案</a>
+          </div>
+        </article>
+
+        <article class="project-card proposal">
+          <div class="project-meta">
+            <span class="badge proposal">重点项目</span>
+            <span class="stack">数据洞察 · NLP聚类 · Dashboard UI</span>
+          </div>
+          <h3>AI海外用户声音洞察 Agent</h3>
+          <p>
+            采集电商评论与社媒反馈，自动输出用户痛点、市场机会、内容选题与产品改进建议，
+            和出海内容增长项目形成数据闭环。
+          </p>
+          <div class="link-grid">
+            <a class="link-chip" href="projects/ai-comment-insight/landing/index.html"><i data-lucide="layout-dashboard"></i>产品官网</a>
+            <a class="link-chip" href="projects/ai-comment-insight/index.html"><i data-lucide="mouse-pointer-click"></i>可交互原型</a>
+            <a class="link-chip" href="projects/ai-comment-insight/portfolio/ai-comment-insight.pdf"><i data-lucide="file-text"></i>PDF</a>
+            <a class="link-chip" href="projects/ai-comment-insight/docs/PRD-V2.0.html"><i data-lucide="braces"></i>PRD</a>
+            <a class="link-chip" href="projects/ai-comment-insight/docs/solution.html"><i data-lucide="book-open"></i>完整方案</a>
+          </div>
+        </article>
+
+        <article class="project-card proposal">
+          <div class="project-meta">
+            <span class="badge proposal">重点项目</span>
+            <span class="stack">Prompt工程 · 文档生成 · Studio UI</span>
+          </div>
+          <h3>AI产品需求文档助手</h3>
+          <p>
+            输入访谈记录与需求素材，自动生成用户画像、需求清单、功能模块、PRD大纲与验收标准，
+            提升产品文档生产效率。
+          </p>
+          <div class="link-grid">
+            <a class="link-chip" href="projects/ai-prd-assistant/landing/index.html"><i data-lucide="layout-dashboard"></i>产品官网</a>
+            <a class="link-chip" href="projects/ai-prd-assistant/index.html"><i data-lucide="mouse-pointer-click"></i>可交互原型</a>
+            <a class="link-chip" href="projects/ai-prd-assistant/portfolio/ai-prd-assistant.pdf"><i data-lucide="file-text"></i>PDF</a>
+            <a class="link-chip" href="projects/ai-prd-assistant/docs/PRD-V2.0.html"><i data-lucide="braces"></i>PRD</a>
+            <a class="link-chip" href="projects/ai-prd-assistant/docs/solution.html"><i data-lucide="book-open"></i>完整方案</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>核心能力</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="cap-grid">
+        <div class="cap-card">
+          <i data-lucide="users"></i>
+          <b>用户研究</b>
+          <span>用户画像、痛点挖掘、需求优先级排序</span>
+        </div>
+        <div class="cap-card">
+          <i data-lucide="scan-search"></i>
+          <b>产品设计</b>
+          <span>竞品分析、PRD、功能拆解、验收标准</span>
+        </div>
+        <div class="cap-card">
+          <i data-lucide="workflow"></i>
+          <b>Agent工作流</b>
+          <span>输入解析、知识检索、生成、质检、输出</span>
+        </div>
+        <div class="cap-card">
+          <i data-lucide="gauge"></i>
+          <b>MVP验证</b>
+          <span>测试任务、指标体系、模拟验证与迭代</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>陈莹莹 · AI产品经理作品集</span>
+      <span>136 8063 6398 · y13680636398@163.com</span>
+    </div>
+  </main>
+  <script src="projects/ai-content-growth/agent-app/vendor/lucide.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide) window.lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

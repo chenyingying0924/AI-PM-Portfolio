@@ -1,0 +1,1415 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完整方案：AI出海内容增长助手 Agent</title>
+<style>
+:root {
+  --bg: #f2f5f8;
+  --surface: #ffffff;
+  --ink: #17212b;
+  --muted: #5c6b7a;
+  --dim: #8a97a6;
+  --border: rgba(23, 33, 43, .1);
+  --border-strong: rgba(23, 33, 43, .16);
+  --accent: #4f5fd8;
+  --accent-2: #4450c9;
+  --accent-soft: rgba(79, 95, 216, .08);
+  --code-bg: #0f1722;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.doc-shell {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.toc {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  padding: 30px 22px;
+  background: #eef2f6;
+  border-right: 1px solid var(--border);
+}
+
+.doc-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-2);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.doc-home:hover {
+  color: var(--accent);
+}
+
+.toc-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+
+.toc nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.toc a:hover {
+  background: rgba(79, 95, 216, .08);
+  color: var(--accent-2);
+}
+
+.toc a.toc-h3 {
+  padding-left: 20px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.doc-main {
+  min-width: 0;
+  padding: 52px 56px 72px;
+}
+
+.doc-head {
+  margin-bottom: 28px;
+}
+
+.doc-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-2);
+  background: var(--accent-soft);
+  border: 1px solid rgba(79, 95, 216, .18);
+  border-radius: 999px;
+  padding: 4px 11px;
+  margin-bottom: 14px;
+}
+
+.doc-head h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.doc-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 42px 48px;
+  max-width: 920px;
+}
+
+.doc-content h1 {
+  font-size: 26px;
+  margin: 34px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+
+.doc-content h2 {
+  font-size: 21px;
+  margin: 34px 0 12px;
+  line-height: 1.35;
+  letter-spacing: -.01em;
+}
+
+.doc-content h3 {
+  font-size: 16px;
+  margin: 26px 0 10px;
+  line-height: 1.4;
+}
+
+.doc-content h4 {
+  font-size: 14px;
+  margin: 20px 0 8px;
+}
+
+.doc-content p {
+  margin: 10px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content strong {
+  color: var(--ink);
+}
+
+.doc-content ul,
+.doc-content ol {
+  margin: 10px 0 10px 22px;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content li {
+  margin: 5px 0;
+}
+
+.doc-content blockquote {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.doc-content th,
+.doc-content td {
+  border: 1px solid var(--border);
+  padding: 9px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-content th {
+  background: #eef2f6;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc-content code {
+  font-family: "SF Mono", "Menlo", monospace;
+  font-size: 12px;
+  background: #edf1f5;
+  color: #37475a;
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+
+.doc-content pre {
+  margin: 16px 0;
+  padding: 16px 18px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.doc-content pre code {
+  background: transparent;
+  color: #dbe4ef;
+  padding: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.doc-footer {
+  margin-top: 18px;
+  color: var(--dim);
+  font-size: 11px;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .doc-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .toc {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 18px;
+  }
+
+  .toc nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .doc-main {
+    padding: 28px 18px 48px;
+  }
+
+  .doc-content {
+    padding: 24px 20px;
+    border-radius: 8px;
+  }
+
+  .doc-head h1 {
+    font-size: 26px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="doc-shell">
+  <aside class="toc">
+    <a class="doc-home" href="../../index.html">← 返回作品集</a>
+    <div class="toc-title">目录</div>
+    <nav><a class="" href="#第一部分：市场背景与需求分析">第一部分：市场背景与需求分析</a>
+<a class="toc-h3" href="#11-海外品牌做社媒营销的四大核心问题">1.1 海外品牌做社媒营销的四大核心问题</a>
+<a class="toc-h3" href="#12-目标用户画像">1.2 目标用户画像</a>
+<a class="" href="#第二部分：竞品分析">第二部分：竞品分析</a>
+<a class="toc-h3" href="#21-选品逻辑">2.1 选品逻辑</a>
+<a class="toc-h3" href="#22-单产品分析">2.2 单产品分析</a>
+<a class="toc-h3" href="#23-横向对比">2.3 横向对比</a>
+<a class="" href="#第三部分：产品机会发现">第三部分：产品机会发现</a>
+<a class="toc-h3" href="#机会1：品牌内容一致性">机会1：品牌内容一致性</a>
+<a class="toc-h3" href="#机会2：爆款经验复用">机会2：爆款经验复用</a>
+<a class="toc-h3" href="#机会3：本地化深度">机会3：本地化深度</a>
+<a class="toc-h3" href="#机会4：内容生产链路效率">机会4：内容生产链路效率</a>
+<a class="toc-h3" href="#机会5：内容质量判断">机会5：内容质量判断</a>
+<a class="toc-h3" href="#机会6：用户反馈反哺创作">机会6：用户反馈反哺创作</a>
+<a class="" href="#第四部分：产品定义">第四部分：产品定义</a>
+<a class="toc-h3" href="#41-一句话产品定位">4.1 一句话产品定位</a>
+<a class="toc-h3" href="#42-目标用户">4.2 目标用户</a>
+<a class="toc-h3" href="#43-核心价值">4.3 核心价值</a>
+<a class="toc-h3" href="#44-产品原则">4.4 产品原则</a>
+<a class="" href="#第五部分：功能设计（mvp）">第五部分：功能设计（MVP）</a>
+<a class="toc-h3" href="#51-mvp功能总览">5.1 MVP功能总览</a>
+<a class="toc-h3" href="#52-功能1：爆款内容拆解agent">5.2 功能1：爆款内容拆解Agent</a>
+<a class="toc-h3" href="#53-功能2：ai内容重写agent">5.3 功能2：AI内容重写Agent</a>
+<a class="toc-h3" href="#54-功能3：品牌知识库">5.4 功能3：品牌知识库</a>
+<a class="toc-h3" href="#55-功能4：内容质量评估">5.5 功能4：内容质量评估</a>
+<a class="" href="#第六部分：ai方案设计">第六部分：AI方案设计</a>
+<a class="toc-h3" href="#61-agent工作流">6.1 Agent工作流</a>
+<a class="toc-h3" href="#62-每一步解决的问题">6.2 每一步解决的问题</a>
+<a class="toc-h3" href="#63-为什么这样设计">6.3 为什么这样设计</a>
+<a class="" href="#第七部分：prompt工程设计">第七部分：Prompt工程设计</a>
+<a class="toc-h3" href="#71-设计原则">7.1 设计原则</a>
+<a class="toc-h3" href="#72-核心prompt模板：爆款内容拆解">7.2 核心Prompt模板：爆款内容拆解</a>
+<a class="toc-h3" href="#73-核心prompt模板：ai内容重写">7.3 核心Prompt模板：AI内容重写</a>
+<a class="toc-h3" href="#74-核心prompt模板：内容质量评估">7.4 核心Prompt模板：内容质量评估</a>
+<a class="" href="#第八部分：mvp验证">第八部分：MVP验证</a>
+<a class="toc-h3" href="#81-验证假设">8.1 验证假设</a>
+<a class="toc-h3" href="#82-测试用户">8.2 测试用户</a>
+<a class="toc-h3" href="#83-测试任务">8.3 测试任务</a>
+<a class="toc-h3" href="#84-评价指标">8.4 评价指标</a>
+<a class="toc-h3" href="#85-模拟验证指标（非真实商业数据）">8.5 模拟验证指标（非真实商业数据）</a>
+<a class="toc-h3" href="#86-验证方法与风险">8.6 验证方法与风险</a>
+<a class="" href="#第九部分：作品集结构（20页pdf）">第九部分：作品集结构（20页PDF）</a>
+<a class="" href="#第十部分：简历描述（star）">第十部分：简历描述（STAR）</a>
+<a class="toc-h3" href="#101-一句话版本">10.1 一句话版本</a>
+<a class="toc-h3" href="#102-简历项目描述">10.2 简历项目描述</a>
+<a class="toc-h3" href="#103-star完整段落">10.3 STAR完整段落</a>
+<a class="toc-h3" href="#104-面试故事线">10.4 面试故事线</a></nav>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-head">
+      <span class="doc-tag">产品方案</span>
+      <h1>完整方案：AI出海内容增长助手 Agent</h1>
+    </div>
+    <article class="doc-content"><h1 id="ai出海内容增长助手-agent：完整方案">AI出海内容增长助手 Agent：完整方案</h1>
+<blockquote>
+<p>项目类型：AI Native产品MVP设计
+项目目标：验证“AI能否帮助出海品牌提升海外社媒内容生产效率”
+交付角色：AI产品经理
+文档范围：市场背景、需求分析、竞品分析、机会发现、产品定义、功能设计、AI方案、Prompt工程、MVP验证、作品集结构、简历描述</p>
+</blockquote>
+<hr>
+<h2 id="第一部分：市场背景与需求分析">第一部分：市场背景与需求分析</h2>
+<h3 id="11-海外品牌做社媒营销的四大核心问题">1.1 海外品牌做社媒营销的四大核心问题</h3>
+<h4 id="问题1：多语言内容生产能力不足">问题1：多语言内容生产能力不足</h4>
+<p>出海品牌通常需要覆盖英语、西语、日语、法语、阿拉伯语等多个市场。多数团队只有1至2名中文母语创作者，外语文案依赖翻译或外包，导致：</p>
+<ul>
+<li>内容产量低，多市场只能“先做英语，再考虑其他市场”。</li>
+<li>多语言排期被拉长，热点追不上。</li>
+<li>外包翻译成本高、周期不可控，内容质量不稳定。</li>
+</ul>
+<p><strong>业务影响：</strong> 市场覆盖速度慢，品牌在非英语市场的存在感弱，错过增长窗口。</p>
+<h4 id="问题2：本地化停留在翻译层面">问题2：本地化停留在“翻译”层面</h4>
+<p>简单翻译会把中文逻辑、广告语气、文化梗直接搬到海外，常见问题包括：</p>
+<ul>
+<li>英文文案过度直白，缺少TikTok、Instagram原生语境。</li>
+<li>同一卖点在不同市场没有对应的生活场景。</li>
+<li>未识别文化禁忌、宗教敏感、平台社区规则。</li>
+<li>数字、单位、支付方式、节日节点未做本地适配。</li>
+</ul>
+<p><strong>业务影响：</strong> 内容点击率低、评论区出现负面反馈，甚至引发品牌风险。</p>
+<h4 id="问题3：爆款内容经验难以复用">问题3：爆款内容经验难以复用</h4>
+<p>运营经常发现“某条内容在北美爆了，但换一个市场、换一个账号就失灵”。原因不是运气，而是：</p>
+<ul>
+<li>爆款结构没有被拆解成可复用的方法。</li>
+<li>爆款经验存在个人脑子里，团队换人就流失。</li>
+<li>竞品爆款只被“看”，没有被结构化沉淀。</li>
+<li>没有把“爆款结构”和“品牌卖点”结合的能力。</li>
+</ul>
+<p><strong>业务影响：</strong> 每次创作都从零开始，无法把成功经验变成稳定的内容杠杆。</p>
+<h4 id="问题4：内容生产效率低，迭代速度慢">问题4：内容生产效率低，迭代速度慢</h4>
+<p>一条多语言社媒内容的标准流程往往是：研究选题、写初稿、内部评审、翻译、本地化校对、平台适配、排期发布。这个过程存在大量重复劳动：</p>
+<ul>
+<li>同一个产品卖点需要反复被重新表达。</li>
+<li>同一段爆款结构在不同平台重复人工改写。</li>
+<li>评审依赖个人经验，缺少统一质量标准。</li>
+</ul>
+<p><strong>业务影响：</strong> 单条内容生产耗时数小时到数天，A/B测试素材不足，增长实验跑不起来。</p>
+<h3 id="12-目标用户画像">1.2 目标用户画像</h3>
+<h4 id="画像a：出海品牌全球社媒负责人">画像A：出海品牌全球社媒负责人</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户角色</td>
+<td>跨境电商/DTC品牌市场经理，负责品牌全球社媒策略</td>
+</tr>
+<tr>
+<td>工作职责</td>
+<td>制定内容策略、管理多市场内容日历、把控品牌调性、协调外包与区域运营</td>
+</tr>
+<tr>
+<td>当前工作流程</td>
+<td>总部定Brief，转翻译，区域运营改场景，负责人终审，排期发布</td>
+</tr>
+<tr>
+<td>痛点</td>
+<td>内容一致性难保证；评审链路长；多语言产能不足；爆款经验无法跨区域复用</td>
+</tr>
+<tr>
+<td>使用AI后</td>
+<td>输入Brief和品牌知识库，AI先产出多语言多平台候选稿，负责人只做策略把关和终审</td>
+</tr>
+</tbody></table>
+<h4 id="画像b：品牌社媒内容创作者">画像B：品牌社媒内容创作者</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户角色</td>
+<td>品牌内容专员/独立创作者，负责日常内容生产</td>
+</tr>
+<tr>
+<td>工作职责</td>
+<td>找选题、写脚本、改文案、做平台适配、跟进发布数据</td>
+</tr>
+<tr>
+<td>当前工作流程</td>
+<td>刷竞品、整理灵感、写初稿、反复改、翻译或外包本地化</td>
+</tr>
+<tr>
+<td>痛点</td>
+<td>创作灵感枯竭；平台格式适配耗时；爆款套路说不清、用不上</td>
+</tr>
+<tr>
+<td>使用AI后</td>
+<td>竞品爆款一键拆解为结构模板，AI按品牌卖点重写多个变体，创作者集中做创意判断</td>
+</tr>
+</tbody></table>
+<h4 id="画像c：增长投放操盘手">画像C：增长/投放操盘手</h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户角色</td>
+<td>增长负责人/广告投放优化师</td>
+</tr>
+<tr>
+<td>工作职责</td>
+<td>生产付费与自然流量素材，跑A/B测试，优化点击率和转化率</td>
+</tr>
+<tr>
+<td>当前工作流程</td>
+<td>向内容团队提素材需求，等待多版本文案，测试后反馈迭代</td>
+</tr>
+<tr>
+<td>痛点</td>
+<td>素材版本不够；测试周期长；爆款钩子无法快速复制</td>
+</tr>
+<tr>
+<td>使用AI后</td>
+<td>基于高表现内容自动生成钩子与卖点变体，素材数量提升，测试节奏加快</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第二部分：竞品分析">第二部分：竞品分析</h2>
+<h3 id="21-选品逻辑">2.1 选品逻辑</h3>
+<p>选择HeyGen、Runway、Pika、Opus Clip，是因为它们分别代表四类AI内容产品方向：</p>
+<ul>
+<li>HeyGen：AI视频与多语言本地化。</li>
+<li>Runway：专业AI视频生成与编辑。</li>
+<li>Pika：低门槛短视频生成。</li>
+<li>Opus Clip：长视频到短视频的内容复用。</li>
+</ul>
+<h3 id="22-单产品分析">2.2 单产品分析</h3>
+<h4 id="heygen">HeyGen</h4>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品定位</td>
+<td>AI数字人视频生成与多语言口播本地化工具</td>
+</tr>
+<tr>
+<td>用户群体</td>
+<td>营销团队、品牌方、企业培训、跨境电商卖家</td>
+</tr>
+<tr>
+<td>核心功能</td>
+<td>数字人Avatar、视频翻译、多语言配音、口型同步、模板化视频制作</td>
+</tr>
+<tr>
+<td>用户流程</td>
+<td>上传视频或脚本，选择Avatar与语言，生成视频，在线编辑，导出</td>
+</tr>
+<tr>
+<td>商业模式</td>
+<td>订阅制+点数制，企业版按席位/视频量收费</td>
+</tr>
+<tr>
+<td>优势</td>
+<td>视频产出快；多语言效果好；无需真人出镜；企业内容产能提升明显</td>
+</tr>
+<tr>
+<td>不足</td>
+<td>偏视频生产，不解决内容策略；数字人风格同质化；缺少品牌知识库与质量评估；单价较高</td>
+</tr>
+<tr>
+<td>解决的问题</td>
+<td>降低口播视频制作和多语言视频生产门槛</td>
+</tr>
+</tbody></table>
+<h4 id="runway">Runway</h4>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品定位</td>
+<td>面向专业创作者的AI视频生成与编辑平台</td>
+</tr>
+<tr>
+<td>用户群体</td>
+<td>独立创作者、广告公司、影视与设计团队</td>
+</tr>
+<tr>
+<td>核心功能</td>
+<td>文生视频、图生视频、视频转视频、运动笔刷、绿幕与特效</td>
+</tr>
+<tr>
+<td>用户流程</td>
+<td>输入创意Prompt，生成素材，逐帧/逐段编辑，导出成品</td>
+</tr>
+<tr>
+<td>商业模式</td>
+<td>订阅制+点数制，专业版与企业版</td>
+</tr>
+<tr>
+<td>优势</td>
+<td>生成质量与可控性较强；功能专业；适合高表现力创意</td>
+</tr>
+<tr>
+<td>不足</td>
+<td>学习门槛高；生成结果不确定性大；没有面向品牌社媒的内容策略能力；成本较高</td>
+</tr>
+<tr>
+<td>解决的问题</td>
+<td>解决创意素材生成和高质量视频后期效率</td>
+</tr>
+</tbody></table>
+<h4 id="pika">Pika</h4>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品定位</td>
+<td>低门槛AI短视频生成工具</td>
+</tr>
+<tr>
+<td>用户群体</td>
+<td>普通创作者、短视频博主、社交媒体用户</td>
+</tr>
+<tr>
+<td>核心功能</td>
+<td>文生视频、图生视频、风格化效果、简单编辑</td>
+</tr>
+<tr>
+<td>用户流程</td>
+<td>输入文字或图片，选择效果，生成短视频，导出分享</td>
+</tr>
+<tr>
+<td>商业模式</td>
+<td>Freemium+订阅点数</td>
+</tr>
+<tr>
+<td>优势</td>
+<td>上手快；出片快；适合快速试创意</td>
+</tr>
+<tr>
+<td>不足</td>
+<td>单条时长短；可控性弱；没有营销目标管理；不适合复杂品牌内容流程</td>
+</tr>
+<tr>
+<td>解决的问题</td>
+<td>解决用户快速生成可分享短视频素材的需求</td>
+</tr>
+</tbody></table>
+<h4 id="opus-clip">Opus Clip</h4>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品定位</td>
+<td>长视频自动切片与社媒复用工具</td>
+</tr>
+<tr>
+<td>用户群体</td>
+<td>YouTuber、播客主、知识博主、营销团队</td>
+</tr>
+<tr>
+<td>核心功能</td>
+<td>自动识别高光片段、生成竖屏切片、字幕、病毒率预测、多平台尺寸适配</td>
+</tr>
+<tr>
+<td>用户流程</td>
+<td>上传长视频，AI切出高光片段，编辑字幕与封面，导出多平台版本</td>
+</tr>
+<tr>
+<td>商业模式</td>
+<td>订阅制，按视频时长和导出量计费</td>
+</tr>
+<tr>
+<td>优势</td>
+<td>内容复用效率高；切片有数据依据；平台适配自动化</td>
+</tr>
+<tr>
+<td>不足</td>
+<td>依赖已有长视频；不能从0创作；跨语言本地化弱；品牌知识沉淀不足</td>
+</tr>
+<tr>
+<td>解决的问题</td>
+<td>解决长视频内容到短视频的高效转化和复用</td>
+</tr>
+</tbody></table>
+<h3 id="23-横向对比">2.3 横向对比</h3>
+<table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>HeyGen</th>
+<th>Runway</th>
+<th>Pika</th>
+<th>Opus Clip</th>
+<th>空白机会</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主要解决</td>
+<td>视频本地化</td>
+<td>视频生成</td>
+<td>快速短视频</td>
+<td>内容复用</td>
+<td>社媒内容策略+生产闭环</td>
+</tr>
+<tr>
+<td>内容起点</td>
+<td>脚本/真人视频</td>
+<td>Prompt</td>
+<td>Prompt/图片</td>
+<td>长视频</td>
+<td>竞品爆款/品牌Brief</td>
+</tr>
+<tr>
+<td>品牌一致性</td>
+<td>弱</td>
+<td>弱</td>
+<td>弱</td>
+<td>弱</td>
+<td>强：品牌知识库</td>
+</tr>
+<tr>
+<td>本地化深度</td>
+<td>中：语言层</td>
+<td>低</td>
+<td>低</td>
+<td>低</td>
+<td>高：文化/场景/平台适配</td>
+</tr>
+<tr>
+<td>质量评估</td>
+<td>无</td>
+<td>无</td>
+<td>无</td>
+<td>有病毒率预测</td>
+<td>多维度内容评分</td>
+</tr>
+<tr>
+<td>内容资产沉淀</td>
+<td>低</td>
+<td>低</td>
+<td>低</td>
+<td>低</td>
+<td>高：爆款结构库+品牌库</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第三部分：产品机会发现">第三部分：产品机会发现</h2>
+<h3 id="机会1：品牌内容一致性">机会1：品牌内容一致性</h3>
+<ul>
+<li>用户痛点：AI内容一多，品牌调性就漂移；多语言版本“长得不像一个品牌”。</li>
+<li>原因分析：通用AI缺少品牌知识，不了解定位、卖点、语气、禁忌。</li>
+<li>产品机会：建立品牌知识库Agent，作为所有生成任务的上下文来源，并提供品牌调性校验。</li>
+</ul>
+<h3 id="机会2：爆款经验复用">机会2：爆款经验复用</h3>
+<ul>
+<li>用户痛点：团队知道某条内容爆了，但说不清为什么，也无法复制到其他市场。</li>
+<li>原因分析：爆款只被“浏览”，没有被拆解为结构、情绪、卖点等可复用要素。</li>
+<li>产品机会：爆款内容拆解Agent，把竞品内容变成结构化模板，并沉淀到爆款库。</li>
+</ul>
+<h3 id="机会3：本地化深度">机会3：本地化深度</h3>
+<ul>
+<li>用户痛点：翻译版内容能看懂，但不像是为当地用户写的。</li>
+<li>原因分析：本地化停留在语言转换，缺少文化语境、用户场景、平台原生表达。</li>
+<li>产品机会：AI内容重写Agent，保留卖点与营销目标，按市场、人群、平台重写表达。</li>
+</ul>
+<h3 id="机会4：内容生产链路效率">机会4：内容生产链路效率</h3>
+<ul>
+<li>用户痛点：研究、写作、翻译、评审、改稿串行，单条内容生产周期过长。</li>
+<li>原因分析：大量环节是重复劳动，缺少一次生成多版本、一次质检多维度的工作流。</li>
+<li>产品机会：Agent化工作流，将“输入到产出”压缩为生成、评分、修订、确认的闭环。</li>
+</ul>
+<h3 id="机会5：内容质量判断">机会5：内容质量判断</h3>
+<ul>
+<li>用户痛点：评审靠个人感觉，不同人标准不一，发布后才发现内容吸引力不足。</li>
+<li>原因分析：缺少面向社媒内容的多维质量标准。</li>
+<li>产品机会：内容质量评估Agent，从吸引力、转化潜力、平台适配度三个维度给出可解释评分。</li>
+</ul>
+<h3 id="机会6：用户反馈反哺创作">机会6：用户反馈反哺创作</h3>
+<ul>
+<li>用户痛点：发布后的评论、完播、点赞数据没有被用来指导下一次创作。</li>
+<li>原因分析：内容生产与数据复盘割裂。</li>
+<li>产品机会：MVP后期增加“高表现内容回流”，让爆款结构库持续自我更新。</li>
+</ul>
+<hr>
+<h2 id="第四部分：产品定义">第四部分：产品定义</h2>
+<h3 id="41-一句话产品定位">4.1 一句话产品定位</h3>
+<p>AI出海内容增长助手Agent，是面向出海品牌的一站式社媒内容生产Agent：以品牌知识库为底座，将竞品爆款拆解为可复用结构，再按目标市场、人群与平台生成多语言内容，并用内容质量评分驱动人工确认。</p>
+<h3 id="42-目标用户">4.2 目标用户</h3>
+<ul>
+<li>核心用户：跨境电商、DTC品牌、SaaS出海公司的市场/社媒运营团队。</li>
+<li>直接使用者：社媒负责人、内容创作者、增长操盘手。</li>
+<li>团队规模：1至50人，内容团队小而分散，缺少多语言全职创作者。</li>
+</ul>
+<h3 id="43-核心价值">4.3 核心价值</h3>
+<table>
+<thead>
+<tr>
+<th>核心价值</th>
+<th>业务问题</th>
+<th>AI如何解决</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产能提升</td>
+<td>多语言内容产出慢</td>
+<td>一份Brief生成多市场、多平台候选稿，翻译+本地化一次完成</td>
+</tr>
+<tr>
+<td>经验复用</td>
+<td>爆款内容无法复制</td>
+<td>爆款拆解Agent把成功内容转为结构模板，持续复用</td>
+</tr>
+<tr>
+<td>品牌稳定</td>
+<td>AI内容与品牌调性不一致</td>
+<td>品牌知识库约束生成，质量评估拦截偏差</td>
+</tr>
+<tr>
+<td>判断前置</td>
+<td>发布后才发现内容不行</td>
+<td>发布前给出吸引力、转化潜力、平台适配度评分与修改建议</td>
+</tr>
+<tr>
+<td>决策闭环</td>
+<td>内容效果无法反哺创作</td>
+<td>高表现内容回流爆款库，形成增长飞轮</td>
+</tr>
+</tbody></table>
+<h3 id="44-产品原则">4.4 产品原则</h3>
+<ol>
+<li>AI生成，人工把关：AI负责产能，人负责品牌判断和最终发布。</li>
+<li>结构化内容资产：爆款结构、品牌知识、内容评分都可查询、可复用。</li>
+<li>结果可解释：评分必须给出理由，不输出“黑盒结论”。</li>
+<li>MVP只验证核心假设：不追求全功能SaaS，优先验证“效率提升+质量可用”。</li>
+</ol>
+<hr>
+<h2 id="第五部分：功能设计（mvp）">第五部分：功能设计（MVP）</h2>
+<h3 id="51-mvp功能总览">5.1 MVP功能总览</h3>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>输入</th>
+<th>输出</th>
+<th>核心价值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>爆款内容拆解Agent</td>
+<td>竞品文案/视频脚本/文字稿</td>
+<td>用户画像、内容结构、情绪触发点、核心卖点、爆款原因</td>
+<td>把爆款经验变成可复用模板</td>
+</tr>
+<tr>
+<td>AI内容重写Agent</td>
+<td>原始内容或拆解模板+品牌知识+目标市场/平台</td>
+<td>多语言多版本内容</td>
+<td>保留卖点，完成表达与场景本地化</td>
+</tr>
+<tr>
+<td>品牌知识库</td>
+<td>品牌手册、产品详情、历史内容</td>
+<td>结构化品牌资产</td>
+<td>保证AI生成符合品牌调性</td>
+</tr>
+<tr>
+<td>内容质量评估</td>
+<td>生成内容+品牌知识+平台规则</td>
+<td>三维评分+原因+修改建议</td>
+<td>把主观评审变成可量化判断</td>
+</tr>
+</tbody></table>
+<h3 id="52-功能1：爆款内容拆解agent">5.2 功能1：爆款内容拆解Agent</h3>
+<p><strong>输入：</strong></p>
+<ul>
+<li>竞品文案、视频脚本、口播文字稿。</li>
+<li>可选：内容链接、平台、发布时间、账号类型。</li>
+</ul>
+<p><strong>输出：</strong></p>
+<table>
+<thead>
+<tr>
+<th>输出项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户画像</td>
+<td>这条内容写给谁：年龄、身份、核心诉求、内容消费场景</td>
+</tr>
+<tr>
+<td>内容结构</td>
+<td>开头钩子、节奏转折、卖点呈现、行动号召的拆解</td>
+</tr>
+<tr>
+<td>情绪触发点</td>
+<td>好奇、焦虑、认同、惊喜、社交证明等触发机制</td>
+</tr>
+<tr>
+<td>核心卖点</td>
+<td>被强调的产品价值与证据</td>
+</tr>
+<tr>
+<td>爆款原因</td>
+<td>结合结构、情绪、平台、人群给出的推断</td>
+</tr>
+</tbody></table>
+<p><strong>产品要点：</strong></p>
+<ul>
+<li>拆解必须引用原文片段，不输出无依据的“爆款结论”。</li>
+<li>拆解结果可一键保存为“内容模板”，供重写Agent使用。</li>
+<li>同一竞品可拆出多套结构，便于A/B测试。</li>
+</ul>
+<h3 id="53-功能2：ai内容重写agent">5.3 功能2：AI内容重写Agent</h3>
+<p><strong>要求：不是简单改写。</strong></p>
+<p>必须保留：</p>
+<ul>
+<li>核心卖点。</li>
+<li>营销目标：曝光、互动、转化、涨粉等。</li>
+<li>品牌约束：语气、身份、禁忌。</li>
+</ul>
+<p>必须优化：</p>
+<ul>
+<li>表达方式：按平台语言习惯重写，避免翻译腔。</li>
+<li>用户场景：替换为当地用户真实生活场景。</li>
+<li>文化适配：节日、数字、货币、生活方式、梗文化。</li>
+</ul>
+<p><strong>MVP输出：</strong></p>
+<ul>
+<li>每个任务默认生成3个内容变体。</li>
+<li>每个变体标注“保留的卖点”“本地化改动”“目标平台”。</li>
+<li>用户可对变体做评分、收藏、继续生成。</li>
+</ul>
+<h3 id="54-功能3：品牌知识库">5.4 功能3：品牌知识库</h3>
+<p><strong>支持三类核心知识：</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>品牌定位</td>
+<td>品牌一句话、目标人群、价值主张、品牌性格</td>
+</tr>
+<tr>
+<td>产品卖点</td>
+<td>核心功能、差异点、证据、常见误解</td>
+</tr>
+<tr>
+<td>目标市场</td>
+<td>覆盖市场、文化禁忌、热门平台、语言偏好</td>
+</tr>
+</tbody></table>
+<p><strong>产品要点：</strong></p>
+<ul>
+<li>支持从品牌手册、商品详情、历史内容批量导入。</li>
+<li>每次生成任务自动检索相关知识，注入Prompt。</li>
+<li>提供“品牌调性校验”，质量评估时检查是否偏离品牌知识。</li>
+<li>支持版本管理，市场策略变化后可追溯。</li>
+</ul>
+<h3 id="55-功能4：内容质量评估">5.5 功能4：内容质量评估</h3>
+<p><strong>输出内容评分：</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>评估重点</th>
+<th>分值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>吸引力</td>
+<td>钩子强度、情绪价值、信息密度</td>
+<td>0至100</td>
+</tr>
+<tr>
+<td>转化潜力</td>
+<td>卖点清晰度、证据强度、行动号召</td>
+<td>0至100</td>
+</tr>
+<tr>
+<td>平台适配度</td>
+<td>平台格式、语言风格、社区规则</td>
+<td>0至100</td>
+</tr>
+</tbody></table>
+<p><strong>产品要点：</strong></p>
+<ul>
+<li>总分低于阈值时，AI给出具体修改建议并引导重新生成。</li>
+<li>每个分数必须带“原因+原文引用”，不做无解释评分。</li>
+<li>支持人工评审记录，沉淀为后续评估标准。</li>
+</ul>
+<hr>
+<h2 id="第六部分：ai方案设计">第六部分：AI方案设计</h2>
+<h3 id="61-agent工作流">6.1 Agent工作流</h3>
+<pre><code class="language-text">输入
+  ↓
+Prompt处理
+  ↓
+知识检索
+  ↓
+LLM生成
+  ↓
+质量检查
+  ↓
+输出
+</code></pre>
+<h3 id="62-每一步解决的问题">6.2 每一步解决的问题</h3>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>设计内容</th>
+<th>解决的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>输入</td>
+<td>结构化收集任务类型、原始内容、目标市场、平台、营销目标</td>
+<td>避免信息缺失导致生成跑偏</td>
+</tr>
+<tr>
+<td>Prompt处理</td>
+<td>按任务动态组装角色、上下文、约束、输出格式</td>
+<td>让一次通用模型能力变成稳定的岗位化能力</td>
+</tr>
+<tr>
+<td>知识检索</td>
+<td>从品牌知识库、爆款库、平台规范、市场禁忌中检索相关内容</td>
+<td>减少幻觉，让生成有品牌依据和市场依据</td>
+</tr>
+<tr>
+<td>LLM生成</td>
+<td>多路生成候选，控制长度、视角、语言</td>
+<td>提高多样性，给用户足够选择</td>
+</tr>
+<tr>
+<td>质量检查</td>
+<td>三维评分、事实一致性、品牌调性、文化风险、平台格式检查</td>
+<td>把“发布后才知道好坏”变成“发布前先把关”</td>
+</tr>
+<tr>
+<td>输出</td>
+<td>结构化内容+评分+修订建议+人工确认</td>
+<td>保证人在环，符合品牌决策流程</td>
+</tr>
+</tbody></table>
+<h3 id="63-为什么这样设计">6.3 为什么这样设计</h3>
+<ul>
+<li>知识检索前置：品牌知识库决定“像不像这个品牌”，检索越准，生成越稳。</li>
+<li>生成与评估分离：用生成Agent负责创意，用评估Agent负责把关，避免“自己写自己评分”的盲区。</li>
+<li>人工确认保留：MVP阶段不追求全自动发布，让用户看到AI的推理和改动，建立信任。</li>
+<li>数据回流：被用户采纳的内容可沉淀到爆款库，让系统越用越懂品牌。</li>
+</ul>
+<hr>
+<h2 id="第七部分：prompt工程设计">第七部分：Prompt工程设计</h2>
+<h3 id="71-设计原则">7.1 设计原则</h3>
+<ol>
+<li>角色明确：告诉模型“你是谁、为谁工作”。</li>
+<li>上下文充分：品牌知识、原始内容、目标市场全部注入。</li>
+<li>约束可验证：卖点保留、事实不新增、禁忌不触碰。</li>
+<li>输出结构化：先给JSON，再给可读文案。</li>
+<li>可重试：质量不达标时，用评分结果驱动二次生成。</li>
+</ol>
+<h3 id="72-核心prompt模板：爆款内容拆解">7.2 核心Prompt模板：爆款内容拆解</h3>
+<pre><code class="language-text">角色：
+你是一名资深出海社媒内容策略分析师，擅长拆解TikTok、Instagram、
+YouTube Shorts等平台的爆款内容。
+
+任务：
+拆解用户提供的竞品内容，输出结构化爆款分析。
+
+上下文：
+品牌所属行业：{{行业}}
+目标市场：{{市场}}
+原始内容：{{竞品文案或视频脚本}}
+
+限制条件：
+1. 所有结论必须引用原文片段，禁止编造数据。
+2. 用户画像只能依据内容中的表达推断，并标注证据。
+3. 爆款原因是推断，需要区分“内容事实”和“策略推断”。
+
+输出格式：
+JSON，包含：
+- user_profile：用户画像及证据
+- content_structure：内容结构
+- emotion_triggers：情绪触发点
+- core_selling_points：核心卖点
+- virality_reasons：爆款原因
+</code></pre>
+<h3 id="73-核心prompt模板：ai内容重写">7.3 核心Prompt模板：AI内容重写</h3>
+<pre><code class="language-text">角色：
+你是一名熟悉欧美、东南亚、日韩等市场的出海品牌内容策划，
+擅长按品牌调性重写多语言社媒内容。
+
+任务：
+基于原始内容或爆款模板，生成适合{{目标市场}}和{{目标平台}}的内容变体。
+
+上下文：
+品牌知识库：{{品牌定位、产品卖点、语气、禁忌}}
+原始内容：{{原文或爆款拆解模板}}
+营销目标：{{曝光/互动/转化/涨粉}}
+
+限制条件：
+1. 不得删除或弱化核心卖点。
+2. 不得新增产品事实，如价格、功效、认证。
+3. 必须做文化适配，避免直译、翻译腔和当地禁忌。
+4. 每个变体必须说明“保留什么、改了什么、为什么改”。
+
+输出格式：
+先输出JSON元信息，再输出3个内容变体。
+</code></pre>
+<h3 id="74-核心prompt模板：内容质量评估">7.4 核心Prompt模板：内容质量评估</h3>
+<pre><code class="language-text">角色：
+你是出海品牌社媒内容质量评审，评审标准严格、判断可解释。
+
+任务：
+对生成内容进行三维评分，并给出修改建议。
+
+上下文：
+品牌知识库：{{品牌知识}}
+目标平台：{{平台}}
+营销目标：{{营销目标}}
+待评估内容：{{内容}}
+
+限制条件：
+1. 每个分数必须附原因和原文引用。
+2. 若出现事实风险、文化风险，必须单列警告。
+3. 修改建议必须具体到可执行。
+
+输出格式：
+JSON，包含：
+- scores：吸引力、转化潜力、平台适配度
+- verdict：通过/需修改/不建议发布
+- warnings：风险清单
+- suggestions：修改建议
+</code></pre>
+<hr>
+<h2 id="第八部分：mvp验证">第八部分：MVP验证</h2>
+<h3 id="81-验证假设">8.1 验证假设</h3>
+<p>核心假设：出海品牌内容团队使用Agent后，可以在保持品牌调性的前提下，显著提升多语言社媒内容生产效率。</p>
+<h3 id="82-测试用户">8.2 测试用户</h3>
+<table>
+<thead>
+<tr>
+<th>用户类型</th>
+<th>人数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>品牌社媒负责人</td>
+<td>3人</td>
+<td>判断品牌一致性与流程可用性</td>
+</tr>
+<tr>
+<td>内容创作者</td>
+<td>4人</td>
+<td>高频使用，记录生产耗时与修改次数</td>
+</tr>
+<tr>
+<td>增长操盘手</td>
+<td>2人</td>
+<td>验证多版本素材生成与A/B测试价值</td>
+</tr>
+<tr>
+<td>本地化/翻译角色</td>
+<td>1人</td>
+<td>校验文化适配质量</td>
+</tr>
+</tbody></table>
+<h3 id="83-测试任务">8.3 测试任务</h3>
+<ol>
+<li>上传一条竞品TikTok脚本，完成爆款拆解。</li>
+<li>使用拆解模板+品牌知识库，为同一产品生成英语、西语、日语三个市场变体。</li>
+<li>针对目标平台（TikTok/Instagram）生成3个内容变体。</li>
+<li>使用质量评估对内容评分并修改到“通过”。</li>
+<li>完成满意度问卷与15分钟访谈。</li>
+</ol>
+<h3 id="84-评价指标">8.4 评价指标</h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>指标</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>效率</td>
+<td>单条内容生产时间</td>
+<td>从输入Brief到确认终稿的耗时</td>
+</tr>
+<tr>
+<td>效率</td>
+<td>人工修改次数</td>
+<td>用户修改AI初稿的轮次</td>
+</tr>
+<tr>
+<td>质量</td>
+<td>首版通过率</td>
+<td>未修改或仅小幅修改即通过的比例</td>
+</tr>
+<tr>
+<td>质量</td>
+<td>品牌调性一致率</td>
+<td>用户判断符合品牌调性的内容占比</td>
+</tr>
+<tr>
+<td>质量</td>
+<td>本地化认可度</td>
+<td>当地用户/审校认为内容自然可用的比例</td>
+</tr>
+<tr>
+<td>体验</td>
+<td>用户满意度</td>
+<td>5分量表，重点看“愿意持续使用”</td>
+</tr>
+<tr>
+<td>商业</td>
+<td>素材产出量</td>
+<td>单位时间可生成的内容变体数</td>
+</tr>
+<tr>
+<td>商业</td>
+<td>使用意愿</td>
+<td>是否愿意纳入正式工作流或付费</td>
+</tr>
+</tbody></table>
+<h3 id="85-模拟验证指标（非真实商业数据）">8.5 模拟验证指标（非真实商业数据）</h3>
+<blockquote>
+<p>说明：以下为MVP设计阶段的目标值，用于验证方案是否可执行，不代表已完成的真实实验结果。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>人工基线（行业经验估算）</th>
+<th>Agent模拟目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单条多语言内容生产时间</td>
+<td>90至120分钟</td>
+<td>30至45分钟</td>
+</tr>
+<tr>
+<td>人工修改次数</td>
+<td>3至4轮</td>
+<td>不超过2轮</td>
+</tr>
+<tr>
+<td>首版通过率</td>
+<td>约40%</td>
+<td>不低于75%</td>
+</tr>
+<tr>
+<td>品牌调性一致率</td>
+<td>依人而异</td>
+<td>不低于80%</td>
+</tr>
+<tr>
+<td>单次Brief产出变体数</td>
+<td>1至2个</td>
+<td>3至5个</td>
+</tr>
+<tr>
+<td>用户满意度</td>
+<td>无AI对照</td>
+<td>4分以上（5分制）</td>
+</tr>
+</tbody></table>
+<h3 id="86-验证方法与风险">8.6 验证方法与风险</h3>
+<ul>
+<li>验证方法：可点击原型或Demo演示，8至10名用户完成5个任务，配合两周使用日志、满意度问卷和深度访谈。</li>
+<li>补充验证：若可拿到品牌历史内容数据，可对比同团队同类型内容的真实生产耗时，但MVP阶段不虚构数据。</li>
+<li>主要风险：样本量小、行业差异大、文化适配主观性强；因此用“评分一致率”和“用户访谈交叉验证”降低偏差。</li>
+</ul>
+<hr>
+<h2 id="第九部分：作品集结构（20页pdf）">第九部分：作品集结构（20页PDF）</h2>
+<table>
+<thead>
+<tr>
+<th>页码</th>
+<th>标题</th>
+<th>内容</th>
+<th>展示形式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>封面</td>
+<td>项目名称、一句话定位、项目类型</td>
+<td>大标题+简洁产品概念图</td>
+</tr>
+<tr>
+<td>2</td>
+<td>项目概览</td>
+<td>项目背景、核心假设、交付范围</td>
+<td>项目卡片+假设流程图</td>
+</tr>
+<tr>
+<td>3</td>
+<td>市场问题</td>
+<td>多语言、本地化、爆款复用、效率四大问题</td>
+<td>四象限问题图</td>
+</tr>
+<tr>
+<td>4</td>
+<td>用户画像A</td>
+<td>品牌社媒负责人工作流与痛点</td>
+<td>用户旅程图</td>
+</tr>
+<tr>
+<td>5</td>
+<td>用户画像B/C</td>
+<td>内容创作者与增长操盘手</td>
+<td>双画像对比卡</td>
+</tr>
+<tr>
+<td>6</td>
+<td>竞品地图</td>
+<td>HeyGen/Runway/Pika/Opus Clip定位</td>
+<td>四象限定位图</td>
+</tr>
+<tr>
+<td>7</td>
+<td>竞品对比</td>
+<td>核心功能、商业模式、优劣势</td>
+<td>横向对比表</td>
+</tr>
+<tr>
+<td>8</td>
+<td>竞品启示</td>
+<td>竞品解决的问题与未解决的问题</td>
+<td>需求缺口图</td>
+</tr>
+<tr>
+<td>9</td>
+<td>机会推导</td>
+<td>5个以上痛点、原因、机会链路</td>
+<td>痛点→原因→机会流程图</td>
+</tr>
+<tr>
+<td>10</td>
+<td>产品定位</td>
+<td>一句话定位、目标用户、核心价值</td>
+<td>定位卡+价值地图</td>
+</tr>
+<tr>
+<td>11</td>
+<td>MVP架构</td>
+<td>四大功能与产品原则</td>
+<td>产品架构图</td>
+</tr>
+<tr>
+<td>12</td>
+<td>功能1</td>
+<td>爆款内容拆解Agent</td>
+<td>输入输出原型示意</td>
+</tr>
+<tr>
+<td>13</td>
+<td>功能2</td>
+<td>AI内容重写Agent</td>
+<td>重写前后对比+本地化示意</td>
+</tr>
+<tr>
+<td>14</td>
+<td>功能3</td>
+<td>品牌知识库</td>
+<td>知识结构图</td>
+</tr>
+<tr>
+<td>15</td>
+<td>功能4</td>
+<td>内容质量评估</td>
+<td>评分雷达图/评分卡</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Agent工作流</td>
+<td>输入到输出的六步闭环</td>
+<td>横向流程图</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Prompt工程</td>
+<td>核心Prompt设计原则与模板结构</td>
+<td>Prompt卡片+代码块</td>
+</tr>
+<tr>
+<td>18</td>
+<td>MVP验证</td>
+<td>用户、任务、指标</td>
+<td>测试方案表+指标体系</td>
+</tr>
+<tr>
+<td>19</td>
+<td>模拟结果</td>
+<td>模拟验证指标与迭代方向</td>
+<td>对比条形图+路线图</td>
+</tr>
+<tr>
+<td>20</td>
+<td>项目复盘</td>
+<td>PM能力体现与下一步计划</td>
+<td>能力标签+复盘清单</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第十部分：简历描述（star）">第十部分：简历描述（STAR）</h2>
+<h3 id="101-一句话版本">10.1 一句话版本</h3>
+<p>主导“AI出海内容增长助手Agent”AI Native MVP设计，完成用户研究、竞品分析、产品定义、Agent工作流与Prompt工程，并用模拟验证证明可降低出海品牌多语言社媒内容生产耗时。</p>
+<h3 id="102-简历项目描述">10.2 简历项目描述</h3>
+<pre><code class="language-text">AI产品经理实习项目 | AI出海内容增长助手 Agent | 2026
+
+- 通过用户访谈与画像分析，识别出海品牌多语言内容生产、本地化、
+  爆款复用、生产效率四大痛点，明确“品牌知识+爆款拆解+本地化重写”
+  的产品机会。
+- 完成HeyGen、Runway、Pika、Opus Clip竞品分析，定位市场空白，
+  定义4个MVP功能：爆款拆解、内容重写、品牌知识库、质量评估。
+- 设计六步Agent工作流与3套核心Prompt模板，覆盖拆解、重写、评分，
+  实现“生成-质检-人工确认”的闭环。
+- 设计10人、5任务的MVP验证方案，建立效率、质量、体验三类指标体系；
+  模拟验证显示单条多语言内容生产时间可由90至120分钟降至30至45分钟。
+  （模拟指标，非真实商业数据）
+</code></pre>
+<h3 id="103-star完整段落">10.3 STAR完整段落</h3>
+<p><strong>Situation：</strong> 出海品牌社媒团队普遍面临多语言产能不足、本地化只做翻译、爆款经验无法复用、内容生产链路过长的问题。</p>
+<p><strong>Task：</strong> 作为AI产品经理，从0到1设计并验证一款AI Native MVP，回答“AI能否帮助出海品牌提升海外社媒内容生产效率”。</p>
+<p><strong>Action：</strong></p>
+<ul>
+<li>完成三类目标用户画像，梳理当前工作流与痛点。</li>
+<li>分析HeyGen、Runway、Pika、Opus Clip四类竞品，找出“内容策略+品牌一致性+本地化深度”的市场空白。</li>
+<li>定义产品定位与4个MVP功能，设计输入、输出、约束与验收标准。</li>
+<li>设计Agent工作流与核心Prompt模板，让AI生成可解释、可评分、可修订。</li>
+<li>设计MVP验证方案：10名用户、5个任务、效率/质量/体验三类指标。</li>
+</ul>
+<p><strong>Result：</strong> 输出完整产品方案与20页作品集；模拟验证表明，单条多语言内容生产时间可降低约60%至75%，人工修改轮次可控制在2轮以内，首版通过率目标不低于75%。所有模拟指标均明确标注，未虚构真实商业数据。</p>
+<h3 id="104-面试故事线">10.4 面试故事线</h3>
+<ol>
+<li>先讲“我发现了什么”：出海内容团队真正缺的不是翻译，而是可复用的爆款方法论。</li>
+<li>再讲“我如何验证”：竞品解决视频生成和切片，但没有解决品牌知识驱动的本地化生产。</li>
+<li>然后讲“我设计了什么”：四大MVP功能+六步Agent工作流+Prompt模板。</li>
+<li>最后讲“结果与反思”：模拟指标、验证局限、下一轮迭代方向。</li>
+</ol>
+<pre><code>
+</code></pre>
+</article>
+    <div class="doc-footer">陈莹莹 · AI产品经理作品集</div>
+  </main>
+</div>
+</body>
+</html>

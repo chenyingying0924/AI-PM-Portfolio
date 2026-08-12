@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI产品需求文档助手</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="studio-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="brand-mark"><i data-lucide="file-text"></i></span>
+        <div class="brand-text">
+          <strong>PRD Copilot</strong>
+          <span>需求文档助手</span>
+        </div>
+      </div>
+      <div class="view-title">
+        <span>文档工作台</span>
+        <span class="engine-chip">本地模拟引擎</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn ghost" id="copyBtn">
+          <i data-lucide="copy"></i><span>复制PRD</span>
+        </button>
+        <button class="btn ghost" id="exportBtn">
+          <i data-lucide="download"></i><span>导出Markdown</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="studio-layout">
+      <aside class="outline-panel">
+        <div class="outline-head">
+          <span class="mini-label">Agent Pipeline</span>
+          <strong id="docName">未命名PRD</strong>
+        </div>
+        <div class="pipeline-list">
+          <a class="pipeline-node" href="#sec-insight"><span class="node-dot"></span><span class="node-text"><b>Research</b><small>需求洞察</small></span></a>
+          <a class="pipeline-node" href="#sec-req"><span class="node-dot"></span><span class="node-text"><b>Requirement</b><small>需求分析</small></span></a>
+          <a class="pipeline-node" href="#sec-module"><span class="node-dot"></span><span class="node-text"><b>Designer</b><small>功能设计</small></span></a>
+          <a class="pipeline-node" href="#sec-outline"><span class="node-dot"></span><span class="node-text"><b>Writer</b><small>PRD生成</small></span></a>
+          <a class="pipeline-node" href="#sec-review"><span class="node-dot"></span><span class="node-text"><b>Review</b><small>质量评审</small></span></a>
+          <div class="pipeline-human"><span class="node-dot human"></span><span class="node-text"><b>Human</b><small>人工确认</small></span></div>
+        </div>
+      </aside>
+
+      <main class="doc-canvas">
+        <div class="empty-state" id="emptyState">
+          <i data-lucide="file-text"></i>
+          <p>等待PRD生成任务</p>
+        </div>
+        <div class="prd-doc hidden" id="prdDoc">
+          <div class="doc-head">
+            <div>
+              <span class="mini-label">AI生成PRD</span>
+              <h2 id="docTitle">产品需求文档</h2>
+            </div>
+            <span class="status-chip">生成完成</span>
+          </div>
+
+          <div class="prd-stats" id="prdStats"></div>
+
+          <section class="doc-section" id="sec-insight">
+            <h3>0. Research Agent · 需求洞察</h3>
+            <div class="insight-grid" id="insightGrid"></div>
+          </section>
+
+          <section class="doc-section" id="sec-persona">
+            <h3>1. 用户画像</h3>
+            <div class="persona-grid" id="personaGrid"></div>
+          </section>
+
+          <section class="doc-section" id="sec-req">
+            <h3>2. 需求清单</h3>
+            <table class="req-table">
+              <thead>
+                <tr>
+                  <th>优先级</th>
+                  <th>需求</th>
+                  <th>用户故事</th>
+                  <th>用户价值</th>
+                  <th>业务价值</th>
+                </tr>
+              </thead>
+              <tbody id="reqBody"></tbody>
+            </table>
+          </section>
+
+          <section class="doc-section" id="sec-module">
+            <h3>3. 功能模块</h3>
+            <div class="module-grid" id="moduleGrid"></div>
+          </section>
+
+          <section class="doc-section" id="sec-outline">
+            <h3>4. PRD大纲</h3>
+            <ol class="outline-list" id="outlineList"></ol>
+          </section>
+
+          <section class="doc-section" id="sec-accept">
+            <h3>5. 验收标准示例</h3>
+            <div class="accept-list" id="acceptList"></div>
+          </section>
+
+          <section class="doc-section" id="sec-risk">
+            <h3>6. 风险与依赖</h3>
+            <div class="risk-list" id="riskList"></div>
+          </section>
+
+          <section class="doc-section" id="sec-review">
+            <h3>7. Review Agent · AI PRD Review</h3>
+            <div class="review-head">
+              <span class="review-score" id="reviewScore">-</span>
+              <div class="review-summary" id="reviewSummary">生成后自动评审</div>
+            </div>
+            <div class="review-grid">
+              <div class="review-col">
+                <h4>问题列表</h4>
+                <ul class="review-list" id="reviewIssues"></ul>
+              </div>
+              <div class="review-col">
+                <h4>修改建议</h4>
+                <ul class="review-list" id="reviewSuggestions"></ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <aside class="inspector">
+        <div class="field">
+          <label for="sourceSelect">需求来源</label>
+          <select id="sourceSelect">
+            <option value="访谈记录">访谈记录</option>
+            <option value="需求池">需求池</option>
+            <option value="竞品分析">竞品分析</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="productInput">产品名称</label>
+          <input id="productInput" value="内容运营管理平台">
+        </div>
+        <div class="field">
+          <label for="userInput">目标用户</label>
+          <input id="userInput" value="运营负责人、内容创作者、审核人员">
+        </div>
+        <div class="field">
+          <label for="noteInput">访谈记录 / 需求素材</label>
+          <textarea id="noteInput" spellcheck="false">运营负责人希望有一个统一的内容管理后台，可以查看所有渠道的内容状态。
+内容创作者希望有内容草稿和多版本管理，不需要每次重新整理素材。
+审核人员希望内容发布前有清晰的审核流程，支持通过、驳回和修改意见。
+运营希望看到每个渠道的内容表现数据，方便判断哪些内容值得继续投入。
+用户反馈：目前内容分散在不同表格里，查找很麻烦，希望有标签和筛选功能。</textarea>
+        </div>
+        <button class="btn primary block" id="generateBtn">
+          <i data-lucide="sparkles"></i><span>生成PRD</span>
+        </button>
+        <div class="pipeline-card">
+          <div class="pipeline-title">
+            <i data-lucide="workflow"></i><span>Agent运行</span>
+          </div>
+          <div class="pipeline-stage" id="pipelineStage">待命</div>
+          <div class="pipeline-bar"><span id="pipelineBar"></span></div>
+          <div class="agent-log" id="agentLog">
+            <div class="log-empty">等待PRD任务</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="../ai-content-growth/agent-app/vendor/lucide.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --bg: #eaf6fc; --surface: #ffffff; --ink: #26333d; --muted: #64747f; --sky: #b0d2de; --warm: #f3a479; --border: rgba(38,51,61,.12); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", sans-serif; background: var(--bg); }
+  .slide { width: 1280px; height: 720px; padding: 44px 56px; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; page-break-after: always; overflow: hidden; }
+  .cover { width: 1280px; height: 720px; background: var(--bg); color: var(--ink); padding: 70px 80px; display: flex; flex-direction: column; justify-content: center; page-break-after: always; }
+  .cover .product { font-size: 14px; letter-spacing: .18em; color: var(--sky); font-weight: 800; text-transform: uppercase; }
+  .cover h1 { font-size: 58px; line-height: 1.08; letter-spacing: -.03em; margin-top: 18px; }
+  .cover p { color: var(--muted); font-size: 17px; line-height: 1.6; margin-top: 22px; max-width: 820px; }
+  .cover .tags { margin-top: 28px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .cover .tags span { border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; font-size: 11px; color: var(--muted); }
+  .top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 24px; }
+  .kicker { font-size: 11px; font-weight: 800; letter-spacing: .16em; color: var(--sky); text-transform: uppercase; }
+  h1 { font-size: 34px; line-height: 1.15; letter-spacing: -.02em; margin-top: 10px; }
+  .subtitle { color: var(--muted); font-size: 12.5px; margin-top: 8px; }
+  .content { flex: 1; display: flex; flex-direction: column; gap: 10px; margin-top: 18px; min-height: 0; }
+  .hypothesis { background: var(--ink); color: var(--bg); border-radius: 10px; padding: 14px 18px; font-size: 14px; font-weight: 800; }
+  .hypothesis span { color: var(--sky); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; }
+  .card.tone { border-color: var(--sky); }
+  .card.tone2 { border-color: var(--warm); }
+  .card h3 { font-size: 13px; margin-bottom: 6px; }
+  .card p, .card li { font-size: 11px; line-height: 1.45; color: var(--muted); }
+  .card ul { list-style: none; }
+  .card li { padding: 3px 0 3px 12px; position: relative; }
+  .card li::before { content: ""; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: var(--sky); }
+  .table { width: 100%; border-collapse: collapse; font-size: 10.5px; line-height: 1.4; }
+  .table th, .table td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  .table th { background: var(--surface); font-weight: 800; }
+  .opp-row { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 8px; }
+  .opp-row .cell { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .opp-row .cell b { display: block; font-size: 9px; color: var(--muted); margin-bottom: 2px; }
+  .opp-row .cell p { font-size: 10.5px; line-height: 1.4; color: var(--ink); }
+  .opp-row .cell.opp { border-color: var(--sky); }
+  .flow { display: flex; gap: 6px; align-items: stretch; }
+  .flow-step { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .flow-step b { display: block; font-size: 12px; }
+  .flow-step span { display: block; font-size: 9px; color: var(--muted); margin-top: 3px; }
+  .flow-arrow { align-self: center; color: var(--sky); font-weight: 900; font-size: 16px; }
+  .prompt-box { background: var(--ink); color: var(--surface); border-radius: 10px; padding: 14px 16px; font-size: 10px; line-height: 1.6; white-space: pre-wrap; }
+  .prompt-box b { color: var(--sky); }
+  .hint { background: var(--surface); border: 1px dashed var(--border); border-radius: 8px; padding: 8px 11px; font-size: 10px; color: var(--muted); }
+  .shot { margin-top: 12px; }
+  .shot img { width: 100%; max-height: 230px; object-fit: cover; object-position: top; border-radius: 10px; border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+    <section class="cover">
+      <div class="product">PRD Copilot</div>
+      <h1>AI产品需求文档助手</h1>
+      <p>AI Product Manager Agent：从需求发现到PRD评审的完整工作流。</p>
+      <div class="tags"><span>需求分析</span><span>产品设计</span><span>Agent工作流</span><span>MVP验证</span></div>
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>02 / 20</span></div>
+      <div class="kicker">01 · PROJECT OVERVIEW</div>
+      <h1>项目概览</h1>
+      <p class="subtitle">AI Product Manager Agent：从需求发现到PRD评审的完整工作流。</p>
+      <div class="content">
+      <div class="hypothesis">核心假设：<span>AI能否降低产品经理需求分析和PRD撰写成本</span></div>
+      <div class="grid3">
+        <div class="card"><h3>产品定位</h3><ul><li>面向产品团队</li><li>AI需求分析与产品设计Agent</li><li>产品经理的智能协作伙伴</li></ul></div>
+        <div class="card tone"><h3>核心价值</h3><ul><li>需求洞察</li><li>需求分析</li><li>产品设计</li><li>PRD生成与评审</li></ul></div>
+        <div class="card tone2"><h3>设计原则</h3><ul><li>AI不是替代人写文档</li><li>人工在环</li><li>结果可解释</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>03 / 20</span></div>
+      <div class="kicker">02 · MARKET NEEDS</div>
+      <h1>产品经理工作流的核心问题</h1>
+      <p class="subtitle">大量时间消耗在整理，而不是判断。</p>
+      <div class="content">
+      <div class="grid2">
+        <div class="card"><h3>信息碎片化</h3><p>访谈、会议、竞品资料分散，需求容易遗漏。</p></div>
+        <div class="card"><h3>重复整理成本高</h3><p>同一份信息被反复整理、排版、改写。</p></div>
+        <div class="card tone"><h3>新人经验不足</h3><p>缺少标准流程和模板，产出质量不稳定。</p></div>
+        <div class="card tone2"><h3>PRD质量依赖个人能力</h3><p>需求完整性、边界情况和验收标准因人而异。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>04 / 20</span></div>
+      <div class="kicker">03 · USER PERSONA 1</div>
+      <h1>用户1：产品经理</h1>
+      <p class="subtitle">负责新产品需求分析，需要从访谈和反馈中提炼需求。</p>
+      <div class="content">
+      <div class="grid2">
+        <div class="card"><h3>工作场景</h3><p>负责新产品需求分析，面对大量访谈和反馈。</p></div>
+        <div class="card tone"><h3>当前任务</h3><p>整理需求素材、分析用户问题、设计功能、撰写PRD。</p></div>
+        <div class="card tone2"><h3>痛点</h3><p>信息整理耗时，需求容易遗漏，PRD修改频繁。</p></div>
+        <div class="card"><h3>业务案例</h3><p>收到50份用户访谈记录，需要整理成需求池并产出PRD。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>05 / 20</span></div>
+      <div class="kicker">04 · USER PERSONA 2</div>
+      <h1>用户2：产品负责人</h1>
+      <p class="subtitle">需要快速评审多个需求方案。</p>
+      <div class="content">
+      <div class="grid2">
+        <div class="card"><h3>工作场景</h3><p>需要在一周内评审多个需求方案。</p></div>
+        <div class="card tone"><h3>当前任务</h3><p>判断需求是否清晰、功能是否合理、范围是否可控。</p></div>
+        <div class="card tone2"><h3>痛点</h3><p>PRD结构不一致，评审效率低，边界情况常被遗漏。</p></div>
+        <div class="card"><h3>业务案例</h3><p>通过AI Review提前获得质量评分和问题列表，聚焦高风险需求。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>06 / 20</span></div>
+      <div class="kicker">05 · USER PERSONA 3</div>
+      <h1>用户3：产品新人/实习生</h1>
+      <p class="subtitle">学习产品设计流程，完成第一份PRD。</p>
+      <div class="content">
+      <div class="grid2">
+        <div class="card"><h3>工作场景</h3><p>在真实产品团队中学习需求分析和PRD撰写。</p></div>
+        <div class="card tone"><h3>当前任务</h3><p>模仿模板撰写PRD，理解需求分析和功能设计。</p></div>
+        <div class="card tone2"><h3>痛点</h3><p>缺少标准流程，不知道PRD应该包含什么。</p></div>
+        <div class="card"><h3>业务案例</h3><p>通过PRD Copilot获得标准结构和验收标准示例，基于初稿学习修改。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>07 / 20</span></div>
+      <div class="kicker">06 · USER JOURNEY</div>
+      <h1>用户使用流程</h1>
+      <p class="subtitle">六步完成从输入素材到PRD评审。</p>
+      <div class="content">
+      <div class="flow">
+        <div class="flow-step"><b>输入</b><span>需求素材</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Research</b><span>用户洞察</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Requirement</b><span>需求列表</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Designer</b><span>功能方案</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Writer</b><span>PRD初稿</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Review</b><span>质量评审</span></div>
+      </div>
+      <div class="hint">每个阶段都有明确输出，用户可以看到AI的推理过程。</div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>08 / 20</span></div>
+      <div class="kicker">07 · AGENT ARCHITECTURE</div>
+      <h1>AI Agent架构总览</h1>
+      <p class="subtitle">五个Agent协作完成产品经理工作流。</p>
+      <div class="content">
+      <div class="grid4">
+        <div class="card"><h3>Agent 1</h3><p>Research Agent</p><p>理解资料，输出用户洞察</p></div>
+        <div class="card tone"><h3>Agent 2</h3><p>Requirement Analyst</p><p>用户故事与优先级</p></div>
+        <div class="card tone2"><h3>Agent 3</h3><p>Product Designer</p><p>功能、流程、页面</p></div>
+        <div class="card"><h3>Agent 4</h3><p>PRD Writer</p><p>标准PRD生成</p></div>
+        <div class="card"><h3>Agent 5</h3><p>Review Agent</p><p>质量评分与建议</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>09 / 20</span></div>
+      <div class="kicker">08 · AGENT 1</div>
+      <h1>Agent 1：Research Agent</h1>
+      <p class="subtitle">理解输入资料，提炼用户洞察。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><ul><li>用户访谈</li><li>会议纪要</li><li>竞品资料</li><li>用户反馈</li></ul></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>识别用户问题</li><li>提取使用场景</li><li>发现需求机会</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>用户问题</li><li>需求机会</li><li>关键洞察</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>10 / 20</span></div>
+      <div class="kicker">09 · AGENT 2</div>
+      <h1>Agent 2：Requirement Analyst Agent</h1>
+      <p class="subtitle">将洞察转化为用户故事和需求列表。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><p>Research Agent的用户洞察</p></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>用户故事转化</li><li>用户价值评估</li><li>业务价值评估</li><li>优先级输出</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>用户故事</li><li>需求列表</li><li>P0/P1/P2</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>11 / 20</span></div>
+      <div class="kicker">10 · AGENT 3</div>
+      <h1>Agent 3：Product Designer Agent</h1>
+      <p class="subtitle">辅助产品方案设计。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><p>需求清单与用户故事</p></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>功能模块拆解</li><li>用户流程设计</li><li>页面结构建议</li><li>业务规则定义</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>功能模块</li><li>用户流程</li><li>页面结构</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>12 / 20</span></div>
+      <div class="kicker">11 · AGENT 4</div>
+      <h1>Agent 4：PRD Writer Agent</h1>
+      <p class="subtitle">生成标准PRD。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><p>用户画像、需求清单、功能方案</p></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>组织PRD结构</li><li>补充功能说明</li><li>生成验收标准</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>背景</li><li>目标</li><li>用户</li><li>功能</li><li>流程</li><li>验收标准</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>13 / 20</span></div>
+      <div class="kicker">12 · AGENT 5</div>
+      <h1>Agent 5：Review Agent</h1>
+      <p class="subtitle">模拟产品负责人评审。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><p>PRD Writer生成的PRD</p></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>需求是否明确</li><li>功能是否合理</li><li>是否缺少边界情况</li><li>质量评分</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>PRD质量评分</li><li>问题列表</li><li>修改建议</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>14 / 20</span></div>
+      <div class="kicker">13 · FEATURES</div>
+      <h1>功能模块设计</h1>
+      <p class="subtitle">F1至F7覆盖产品经理完整工作流。</p>
+      <div class="content">
+      <table class="table">
+        <thead><tr><th>功能</th><th>用户价值</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td>F1 多源需求输入</td><td>减少人工整理</td><td>已实现</td></tr>
+          <tr><td>F2 AI需求洞察</td><td>快速获得用户问题与机会</td><td>已实现</td></tr>
+          <tr><td>F3 用户画像生成</td><td>统一用户理解</td><td>已实现</td></tr>
+          <tr><td>F4 AI需求池管理</td><td>可维护的需求池</td><td>已实现</td></tr>
+          <tr><td>F5 功能方案设计</td><td>快速评估产品方案</td><td>已实现</td></tr>
+          <tr><td>F6 PRD自动生成</td><td>减少重复撰写</td><td>已实现</td></tr>
+          <tr><td>F7 AI PRD Review</td><td>提前发现问题</td><td>已实现</td></tr>
+        </tbody>
+      </table>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>15 / 20</span></div>
+      <div class="kicker">14 · COMPETITIVE ANALYSIS</div>
+      <h1>竞品分析</h1>
+      <p class="subtitle">PRD Copilot的机会是垂直产品经理工作流Agent。</p>
+      <div class="content">
+      <table class="table">
+        <thead><tr><th>产品</th><th>优势</th><th>不足</th><th>PRD Copilot机会</th></tr></thead>
+        <tbody>
+          <tr><td>ChatGPT</td><td>通用能力强</td><td>缺少产品工作流</td><td>垂直Agent工作流</td></tr>
+          <tr><td>Notion AI</td><td>文档能力强</td><td>缺少需求理解</td><td>需求到PRD的转化</td></tr>
+          <tr><td>Jira AI</td><td>研发协作强</td><td>产品设计能力有限</td><td>产品设计到评审闭环</td></tr>
+        </tbody>
+      </table>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>16 / 20</span></div>
+      <div class="kicker">15 · MVP DESIGN</div>
+      <h1>MVP设计</h1>
+      <p class="subtitle">验证AI能否降低需求分析和PRD撰写成本。</p>
+      <div class="content">
+      <div class="grid2">
+        <div class="card"><h3>MVP必须包含</h3><ul><li>需求素材输入</li><li>用户画像生成</li><li>需求拆解</li><li>功能设计</li><li>PRD生成</li><li>AI Review</li></ul></div>
+        <div class="card tone"><h3>暂不包含</h3><ul><li>实时协作</li><li>企业知识库</li><li>复杂权限系统</li></ul></div>
+      </div>
+      <div class="hint">成功标准：PRD初稿生成时间30秒内，需求完整率不低于85%。</div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>17 / 20</span></div>
+      <div class="kicker">16 · AI WORKFLOW</div>
+      <h1>Agent工作流</h1>
+      <p class="subtitle">五个Agent协作，人工在环。</p>
+      <div class="content">
+      <div class="flow">
+        <div class="flow-step"><b>Agent1</b><span>Research</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Agent2</b><span>Requirement</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Agent3</b><span>Designer</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Agent4</b><span>Writer</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Agent5</b><span>Review</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Human</b><span>确认</span></div>
+      </div>
+    </div>
+      <div class="shot"><img src="../assets/studio.png" alt="原型截图"></div>
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>18 / 20</span></div>
+      <div class="kicker">17 · PROMPT ENGINEERING</div>
+      <h1>Prompt工程设计</h1>
+      <p class="subtitle">五个Agent分别使用结构化Prompt模板。</p>
+      <div class="content">
+      <div class="prompt-box"><b>Research：</b>理解访谈与资料，输出用户问题、场景、机会
+<b>Requirement：</b>将洞察转化为用户故事与P0/P1/P2
+<b>Designer：</b>生成功能模块、用户流程、业务规则
+<b>Writer：</b>按标准结构生成PRD
+<b>Review：</b>模拟负责人评审，输出评分与建议</div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>19 / 20</span></div>
+      <div class="kicker">18 · METRICS</div>
+      <h1>产品指标体系</h1>
+      <p class="subtitle">North Star Metric：有效PRD产出效率。</p>
+      <div class="content">
+      <table class="table">
+        <thead><tr><th>类型</th><th>指标</th><th>目标</th></tr></thead>
+        <tbody>
+          <tr><td>效率</td><td>PRD初稿生成时间</td><td>30秒内</td></tr>
+          <tr><td>质量</td><td>PRD完整度评分</td><td>不低于85分</td></tr>
+          <tr><td>体验</td><td>用户满意度</td><td>4分以上（5分制）</td></tr>
+          <tr><td>业务</td><td>需求评审通过率</td><td>提升30%</td></tr>
+        </tbody>
+      </table>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>PRD Copilot</span><span>20 / 20</span></div>
+      <div class="kicker">19 · PORTFOLIO VALUE</div>
+      <h1>作品集展示价值</h1>
+      <p class="subtitle">从产品背景到Agent设计，再到指标体系验证。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card tone"><h3>产品故事线</h3><p>产品经理大量时间被整理占用，AI Agent辅助完成需求发现、分析、设计和评审。</p></div>
+        <div class="card"><h3>页面结构</h3><p>官网、原型、20页PDF、PRD V2.0、完整方案。</p></div>
+        <div class="card tone2"><h3>面试逻辑</h3><p>背景 → 痛点 → AI机会 → Agent设计 → 产品方案 → MVP验证 → 未来规划。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  </body>
+</html>

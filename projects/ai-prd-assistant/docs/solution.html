@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完整方案：AI产品需求文档助手</title>
+<style>
+:root {
+  --bg: #f2f5f8;
+  --surface: #ffffff;
+  --ink: #17212b;
+  --muted: #5c6b7a;
+  --dim: #8a97a6;
+  --border: rgba(23, 33, 43, .1);
+  --border-strong: rgba(23, 33, 43, .16);
+  --accent: #4f5fd8;
+  --accent-2: #4450c9;
+  --accent-soft: rgba(79, 95, 216, .08);
+  --code-bg: #0f1722;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.doc-shell {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.toc {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  padding: 30px 22px;
+  background: #eef2f6;
+  border-right: 1px solid var(--border);
+}
+
+.doc-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-2);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.doc-home:hover {
+  color: var(--accent);
+}
+
+.toc-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+
+.toc nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.toc a:hover {
+  background: rgba(79, 95, 216, .08);
+  color: var(--accent-2);
+}
+
+.toc a.toc-h3 {
+  padding-left: 20px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.doc-main {
+  min-width: 0;
+  padding: 52px 56px 72px;
+}
+
+.doc-head {
+  margin-bottom: 28px;
+}
+
+.doc-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-2);
+  background: var(--accent-soft);
+  border: 1px solid rgba(79, 95, 216, .18);
+  border-radius: 999px;
+  padding: 4px 11px;
+  margin-bottom: 14px;
+}
+
+.doc-head h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.doc-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 42px 48px;
+  max-width: 920px;
+}
+
+.doc-content h1 {
+  font-size: 26px;
+  margin: 34px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+
+.doc-content h2 {
+  font-size: 21px;
+  margin: 34px 0 12px;
+  line-height: 1.35;
+  letter-spacing: -.01em;
+}
+
+.doc-content h3 {
+  font-size: 16px;
+  margin: 26px 0 10px;
+  line-height: 1.4;
+}
+
+.doc-content h4 {
+  font-size: 14px;
+  margin: 20px 0 8px;
+}
+
+.doc-content p {
+  margin: 10px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content strong {
+  color: var(--ink);
+}
+
+.doc-content ul,
+.doc-content ol {
+  margin: 10px 0 10px 22px;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content li {
+  margin: 5px 0;
+}
+
+.doc-content blockquote {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.doc-content th,
+.doc-content td {
+  border: 1px solid var(--border);
+  padding: 9px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-content th {
+  background: #eef2f6;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc-content code {
+  font-family: "SF Mono", "Menlo", monospace;
+  font-size: 12px;
+  background: #edf1f5;
+  color: #37475a;
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+
+.doc-content pre {
+  margin: 16px 0;
+  padding: 16px 18px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.doc-content pre code {
+  background: transparent;
+  color: #dbe4ef;
+  padding: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.doc-footer {
+  margin-top: 18px;
+  color: var(--dim);
+  font-size: 11px;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .doc-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .toc {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 18px;
+  }
+
+  .toc nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .doc-main {
+    padding: 28px 18px 48px;
+  }
+
+  .doc-content {
+    padding: 24px 20px;
+    border-radius: 8px;
+  }
+
+  .doc-head h1 {
+    font-size: 26px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="doc-shell">
+  <aside class="toc">
+    <a class="doc-home" href="../../index.html">← 返回作品集</a>
+    <div class="toc-title">目录</div>
+    <nav><a class="" href="#1-产品背景">1. 产品背景</a>
+<a class="" href="#2-产品定位">2. 产品定位</a>
+<a class="" href="#3-ai-agent架构">3. AI Agent架构</a>
+<a class="" href="#4-功能范围">4. 功能范围</a>
+<a class="" href="#5-mvp验证">5. MVP验证</a>
+<a class="toc-h3" href="#mvp目标">MVP目标</a>
+<a class="toc-h3" href="#评价指标">评价指标</a>
+<a class="" href="#6-迭代计划">6. 迭代计划</a>
+<a class="" href="#7-作品集展示">7. 作品集展示</a></nav>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-head">
+      <span class="doc-tag">产品方案</span>
+      <h1>完整方案：AI产品需求文档助手</h1>
+    </div>
+    <article class="doc-content"><h1 id="prd-copilot-v20：ai-product-manager-agent-完整方案">PRD Copilot V2.0：AI Product Manager Agent 完整方案</h1>
+<h2 id="1-产品背景">1. 产品背景</h2>
+<p>产品经理大量时间消耗在信息整理和PRD撰写上，真正用于需求判断的时间不足。</p>
+<p>当前工作流：</p>
+<pre><code class="language-text">用户访谈 → 会议记录 → 需求整理 → 用户画像 → 需求分析 → 功能设计 → PRD撰写 → 评审修改
+</code></pre>
+<p>主要问题：</p>
+<ol>
+<li>信息碎片化</li>
+<li>重复整理成本高</li>
+<li>新人经验不足</li>
+<li>PRD质量依赖个人能力</li>
+</ol>
+<h2 id="2-产品定位">2. 产品定位</h2>
+<p>PRD Copilot是面向产品团队的AI需求分析与产品设计Agent。</p>
+<p>核心价值：</p>
+<ul>
+<li>需求洞察</li>
+<li>需求分析</li>
+<li>产品设计</li>
+<li>PRD生成</li>
+<li>质量评审</li>
+</ul>
+<h2 id="3-ai-agent架构">3. AI Agent架构</h2>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>职责</th>
+<th>输出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Research Agent</td>
+<td>理解输入资料</td>
+<td>用户问题、需求机会、关键洞察</td>
+</tr>
+<tr>
+<td>Requirement Analyst Agent</td>
+<td>需求分析</td>
+<td>用户故事、需求列表、P0/P1/P2</td>
+</tr>
+<tr>
+<td>Product Designer Agent</td>
+<td>产品方案设计</td>
+<td>功能模块、用户流程、页面结构</td>
+</tr>
+<tr>
+<td>PRD Writer Agent</td>
+<td>PRD生成</td>
+<td>背景、目标、用户、功能、流程、验收标准</td>
+</tr>
+<tr>
+<td>Review Agent</td>
+<td>模拟产品负责人评审</td>
+<td>问题列表、修改建议、质量评分</td>
+</tr>
+</tbody></table>
+<h2 id="4-功能范围">4. 功能范围</h2>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>说明</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F1 多源需求输入</td>
+<td>文本、访谈、会议纪要、竞品分析</td>
+<td>已实现</td>
+</tr>
+<tr>
+<td>F2 AI需求洞察</td>
+<td>用户问题、场景、机会点</td>
+<td>已实现</td>
+</tr>
+<tr>
+<td>F3 用户画像生成</td>
+<td>目标、行为、痛点</td>
+<td>已实现</td>
+</tr>
+<tr>
+<td>F4 AI需求池管理</td>
+<td>描述、用户价值、业务价值、优先级</td>
+<td>已实现</td>
+</tr>
+<tr>
+<td>F5 功能方案设计</td>
+<td>功能模块、页面流程、业务规则</td>
+<td>已实现</td>
+</tr>
+<tr>
+<td>F6 PRD自动生成</td>
+<td>标准PRD结构</td>
+<td>已实现</td>
+</tr>
+<tr>
+<td>F7 AI PRD Review</td>
+<td>问题、建议、质量评分</td>
+<td>已实现</td>
+</tr>
+</tbody></table>
+<h2 id="5-mvp验证">5. MVP验证</h2>
+<h3 id="mvp目标">MVP目标</h3>
+<p>验证AI是否能够降低产品经理需求分析和PRD撰写成本。</p>
+<h3 id="评价指标">评价指标</h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>指标</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>效率</td>
+<td>PRD初稿生成时间</td>
+<td>30秒内</td>
+</tr>
+<tr>
+<td>质量</td>
+<td>PRD完整度评分</td>
+<td>不低于85分</td>
+</tr>
+<tr>
+<td>体验</td>
+<td>用户满意度</td>
+<td>4分以上（5分制）</td>
+</tr>
+<tr>
+<td>业务</td>
+<td>需求评审通过率</td>
+<td>提升30%</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>以上为模拟验证指标，非真实商业数据。</p>
+</blockquote>
+<h2 id="6-迭代计划">6. 迭代计划</h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V0.1</td>
+<td>需求输入、画像、需求拆解、功能设计、PRD生成、Review</td>
+</tr>
+<tr>
+<td>V0.2</td>
+<td>实时协作、团队模板、企业知识库</td>
+</tr>
+<tr>
+<td>V0.3</td>
+<td>与Jira、Notion等工具打通</td>
+</tr>
+</tbody></table>
+<h2 id="7-作品集展示">7. 作品集展示</h2>
+<ul>
+<li>官网：<code>projects/ai-prd-assistant/landing/index.html</code></li>
+<li>原型：<code>projects/ai-prd-assistant/index.html</code></li>
+<li>PDF：<code>projects/ai-prd-assistant/portfolio/ai-prd-assistant.pdf</code></li>
+<li>PRD V2.0：<code>projects/ai-prd-assistant/docs/PRD-V2.0.html</code></li>
+<li>完整方案：本文档</li>
+</ul>
+</article>
+    <div class="doc-footer">陈莹莹 · AI产品经理作品集</div>
+  </main>
+</div>
+</body>
+</html>

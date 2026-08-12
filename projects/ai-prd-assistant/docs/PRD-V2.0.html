@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRD Copilot V2.0：AI Product Manager Agent 产品需求文档</title>
+<style>
+:root {
+  --bg: #f2f5f8;
+  --surface: #ffffff;
+  --ink: #17212b;
+  --muted: #5c6b7a;
+  --dim: #8a97a6;
+  --border: rgba(23, 33, 43, .1);
+  --border-strong: rgba(23, 33, 43, .16);
+  --accent: #4f5fd8;
+  --accent-2: #4450c9;
+  --accent-soft: rgba(79, 95, 216, .08);
+  --code-bg: #0f1722;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.doc-shell {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.toc {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  padding: 30px 22px;
+  background: #eef2f6;
+  border-right: 1px solid var(--border);
+}
+
+.doc-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-2);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.doc-home:hover {
+  color: var(--accent);
+}
+
+.toc-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+
+.toc nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.toc a:hover {
+  background: rgba(79, 95, 216, .08);
+  color: var(--accent-2);
+}
+
+.toc a.toc-h3 {
+  padding-left: 20px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.doc-main {
+  min-width: 0;
+  padding: 52px 56px 72px;
+}
+
+.doc-head {
+  margin-bottom: 28px;
+}
+
+.doc-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-2);
+  background: var(--accent-soft);
+  border: 1px solid rgba(79, 95, 216, .18);
+  border-radius: 999px;
+  padding: 4px 11px;
+  margin-bottom: 14px;
+}
+
+.doc-head h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.doc-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 42px 48px;
+  max-width: 920px;
+}
+
+.doc-content h1 {
+  font-size: 26px;
+  margin: 34px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+
+.doc-content h2 {
+  font-size: 21px;
+  margin: 34px 0 12px;
+  line-height: 1.35;
+  letter-spacing: -.01em;
+}
+
+.doc-content h3 {
+  font-size: 16px;
+  margin: 26px 0 10px;
+  line-height: 1.4;
+}
+
+.doc-content h4 {
+  font-size: 14px;
+  margin: 20px 0 8px;
+}
+
+.doc-content p {
+  margin: 10px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content strong {
+  color: var(--ink);
+}
+
+.doc-content ul,
+.doc-content ol {
+  margin: 10px 0 10px 22px;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content li {
+  margin: 5px 0;
+}
+
+.doc-content blockquote {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.doc-content th,
+.doc-content td {
+  border: 1px solid var(--border);
+  padding: 9px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-content th {
+  background: #eef2f6;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc-content code {
+  font-family: "SF Mono", "Menlo", monospace;
+  font-size: 12px;
+  background: #edf1f5;
+  color: #37475a;
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+
+.doc-content pre {
+  margin: 16px 0;
+  padding: 16px 18px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.doc-content pre code {
+  background: transparent;
+  color: #dbe4ef;
+  padding: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.doc-footer {
+  margin-top: 18px;
+  color: var(--dim);
+  font-size: 11px;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .doc-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .toc {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 18px;
+  }
+
+  .toc nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .doc-main {
+    padding: 28px 18px 48px;
+  }
+
+  .doc-content {
+    padding: 24px 20px;
+    border-radius: 8px;
+  }
+
+  .doc-head h1 {
+    font-size: 26px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="doc-shell">
+  <aside class="toc">
+    <a class="doc-home" href="../../index.html">← 返回作品集</a>
+    <div class="toc-title">目录</div>
+    <nav><a class="" href="#0-文档信息">0. 文档信息</a>
+<a class="" href="#1-核心修改原则">1. 核心修改原则</a>
+<a class="toc-h3" href="#11-从文档生成工具升级为产品经理工作流agent">1.1 从“文档生成工具”升级为“产品经理工作流Agent”</a>
+<a class="toc-h3" href="#12-产品关系变化">1.2 产品关系变化</a>
+<a class="toc-h3" href="#13-设计原则">1.3 设计原则</a>
+<a class="" href="#2-产品定位">2. 产品定位</a>
+<a class="toc-h3" href="#21-一句话定位">2.1 一句话定位</a>
+<a class="toc-h3" href="#22-核心价值">2.2 核心价值</a>
+<a class="toc-h3" href="#23-产品定位关键词">2.3 产品定位关键词</a>
+<a class="" href="#3-产品背景">3. 产品背景</a>
+<a class="toc-h3" href="#31-行业背景">3.1 行业背景</a>
+<a class="toc-h3" href="#32-当前产品经理工作流程">3.2 当前产品经理工作流程</a>
+<a class="toc-h3" href="#33-当前问题">3.3 当前问题</a>
+<a class="toc-h3" href="#34-llm为什么适合解决该问题">3.4 LLM为什么适合解决该问题</a>
+<a class="" href="#4-用户画像">4. 用户画像</a>
+<a class="toc-h3" href="#41-用户1：产品经理">4.1 用户1：产品经理</a>
+<a class="toc-h3" href="#42-用户2：产品负责人">4.2 用户2：产品负责人</a>
+<a class="toc-h3" href="#43-用户3：产品新人实习生">4.3 用户3：产品新人/实习生</a>
+<a class="" href="#5-用户使用流程（user-journey）">5. 用户使用流程（User Journey）</a>
+<a class="toc-h3" href="#51-完整流程">5.1 完整流程</a>
+<a class="toc-h3" href="#52-流程拆解">5.2 流程拆解</a>
+<a class="" href="#6-ai-agent架构">6. AI Agent架构</a>
+<a class="toc-h3" href="#61-架构总览">6.1 架构总览</a>
+<a class="toc-h3" href="#62-agent-1：research-agent">6.2 Agent 1：Research Agent</a>
+<a class="toc-h3" href="#63-agent-2：requirement-analyst-agent">6.3 Agent 2：Requirement Analyst Agent</a>
+<a class="toc-h3" href="#64-agent-3：product-designer-agent">6.4 Agent 3：Product Designer Agent</a>
+<a class="toc-h3" href="#65-agent-4：prd-writer-agent">6.5 Agent 4：PRD Writer Agent</a>
+<a class="toc-h3" href="#66-agent-5：review-agent">6.6 Agent 5：Review Agent</a>
+<a class="" href="#7-功能模块设计">7. 功能模块设计</a>
+<a class="toc-h3" href="#f1-多源需求输入">F1 多源需求输入</a>
+<a class="toc-h3" href="#f2-ai需求洞察">F2 AI需求洞察</a>
+<a class="toc-h3" href="#f3-用户画像生成">F3 用户画像生成</a>
+<a class="toc-h3" href="#f4-ai需求池管理">F4 AI需求池管理</a>
+<a class="toc-h3" href="#f5-功能方案设计">F5 功能方案设计</a>
+<a class="toc-h3" href="#f6-prd自动生成">F6 PRD自动生成</a>
+<a class="toc-h3" href="#f7-ai-prd-review">F7 AI PRD Review</a>
+<a class="" href="#8-竞品分析">8. 竞品分析</a>
+<a class="toc-h3" href="#81-chatgpt">8.1 ChatGPT</a>
+<a class="toc-h3" href="#82-notion-ai">8.2 Notion AI</a>
+<a class="toc-h3" href="#83-jira-ai">8.3 Jira AI</a>
+<a class="toc-h3" href="#84-竞品总结">8.4 竞品总结</a>
+<a class="" href="#9-mvp设计">9. MVP设计</a>
+<a class="toc-h3" href="#91-mvp目标">9.1 MVP目标</a>
+<a class="toc-h3" href="#92-mvp必须包含">9.2 MVP必须包含</a>
+<a class="toc-h3" href="#93-mvp暂不包含">9.3 MVP暂不包含</a>
+<a class="toc-h3" href="#94-mvp成功标准">9.4 MVP成功标准</a>
+<a class="" href="#10-产品指标体系">10. 产品指标体系</a>
+<a class="toc-h3" href="#101-north-star-metric">10.1 North Star Metric</a>
+<a class="toc-h3" href="#102-效率指标">10.2 效率指标</a>
+<a class="toc-h3" href="#103-质量指标">10.3 质量指标</a>
+<a class="toc-h3" href="#104-体验指标">10.4 体验指标</a>
+<a class="toc-h3" href="#105-业务指标">10.5 业务指标</a>
+<a class="" href="#11-portfolio-story">11. Portfolio Story</a>
+<a class="toc-h3" href="#111-产品背景">11.1 产品背景</a>
+<a class="toc-h3" href="#112-用户痛点">11.2 用户痛点</a>
+<a class="toc-h3" href="#113-ai机会">11.3 AI机会</a>
+<a class="toc-h3" href="#114-agent设计">11.4 Agent设计</a>
+<a class="toc-h3" href="#115-产品方案">11.5 产品方案</a>
+<a class="toc-h3" href="#116-mvp验证">11.6 MVP验证</a>
+<a class="toc-h3" href="#117-未来规划">11.7 未来规划</a>
+<a class="" href="#12-现有ui一致性检查与页面修改建议">12. 现有UI一致性检查与页面修改建议</a>
+<a class="toc-h3" href="#121-检查结论">12.1 检查结论</a>
+<a class="toc-h3" href="#122-需要修改的页面">12.2 需要修改的页面</a>
+<a class="toc-h3" href="#123-修改原则">12.3 修改原则</a></nav>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-head">
+      <span class="doc-tag">产品需求文档</span>
+      <h1>PRD Copilot V2.0：AI Product Manager Agent 产品需求文档</h1>
+    </div>
+    <article class="doc-content"><h1 id="prd-copilot-v20：ai-product-manager-agent-产品需求文档">PRD Copilot V2.0：AI Product Manager Agent 产品需求文档</h1>
+<h2 id="0-文档信息">0. 文档信息</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品名称</td>
+<td>PRD Copilot</td>
+</tr>
+<tr>
+<td>文档版本</td>
+<td>V2.0</td>
+</tr>
+<tr>
+<td>文档状态</td>
+<td>作品集展示版</td>
+</tr>
+<tr>
+<td>文档定位</td>
+<td>AI产品经理PRD</td>
+</tr>
+<tr>
+<td>创建日期</td>
+<td>2026-08-12</td>
+</tr>
+<tr>
+<td>产品定位</td>
+<td>面向产品团队的AI需求分析与产品设计Agent</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="1-核心修改原则">1. 核心修改原则</h2>
+<h3 id="11-从文档生成工具升级为产品经理工作流agent">1.1 从“文档生成工具”升级为“产品经理工作流Agent”</h3>
+<p>旧定位：</p>
+<blockquote>
+<p>AI帮助产品经理生成PRD。</p>
+</blockquote>
+<p>新定位：</p>
+<blockquote>
+<p>AI Agent辅助产品经理完成从需求发现、需求分析、产品设计到PRD评审的完整工作流。</p>
+</blockquote>
+<h3 id="12-产品关系变化">1.2 产品关系变化</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>旧版本</th>
+<th>V2.0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AI角色</td>
+<td>文档生成器</td>
+<td>产品经理的智能协作伙伴</td>
+</tr>
+<tr>
+<td>工作起点</td>
+<td>输入需求文本</td>
+<td>输入用户访谈、会议纪要、竞品资料、用户反馈</td>
+</tr>
+<tr>
+<td>工作终点</td>
+<td>输出PRD</td>
+<td>输出洞察、需求、方案、PRD和质量评审</td>
+</tr>
+<tr>
+<td>决策参与</td>
+<td>少</td>
+<td>参与需求优先级和方案设计</td>
+</tr>
+<tr>
+<td>质量保障</td>
+<td>无</td>
+<td>Review Agent模拟产品负责人评审</td>
+</tr>
+</tbody></table>
+<h3 id="13-设计原则">1.3 设计原则</h3>
+<ol>
+<li>AI不是替代产品经理写文档。</li>
+<li>AI是产品经理的智能协作伙伴。</li>
+<li>每个Agent都有明确输入、处理逻辑和输出结果。</li>
+<li>人工在环：AI生成初稿，产品经理负责判断和决策。</li>
+<li>结果可解释：PRD评审必须输出问题、建议和质量评分。</li>
+</ol>
+<hr>
+<h2 id="2-产品定位">2. 产品定位</h2>
+<h3 id="21-一句话定位">2.1 一句话定位</h3>
+<p>PRD Copilot是面向产品团队的AI需求分析与产品设计Agent，通过理解用户声音、业务目标和产品规范，自动完成需求洞察、方案设计、PRD生成和质量评审。</p>
+<h3 id="22-核心价值">2.2 核心价值</h3>
+<ol>
+<li>需求洞察：从访谈、反馈和竞品资料中发现用户问题和机会。</li>
+<li>需求分析：将信息转化为用户故事和P0/P1/P2需求。</li>
+<li>产品设计：辅助生成功能模块、用户流程和页面结构。</li>
+<li>PRD生成：输出标准、完整、可评审的PRD。</li>
+<li>质量评审：模拟产品负责人视角检查需求完整性和边界情况。</li>
+</ol>
+<h3 id="23-产品定位关键词">2.3 产品定位关键词</h3>
+<ul>
+<li>AI Native</li>
+<li>Agent Workflow</li>
+<li>产品设计</li>
+<li>团队协作</li>
+<li>人工在环</li>
+</ul>
+<hr>
+<h2 id="3-产品背景">3. 产品背景</h2>
+<h3 id="31-行业背景">3.1 行业背景</h3>
+<p>产品经理的核心工作不是写文档，而是把模糊的业务问题转化为清晰、可执行的产品方案。</p>
+<p>但实际工作中，产品经理大量时间被以下工作占用：</p>
+<ul>
+<li>整理访谈记录</li>
+<li>归纳用户反馈</li>
+<li>梳理需求池</li>
+<li>调整PRD结构</li>
+<li>应对评审修改</li>
+</ul>
+<p>这些工作重复性高、信息分散、依赖个人经验。</p>
+<h3 id="32-当前产品经理工作流程">3.2 当前产品经理工作流程</h3>
+<pre><code class="language-text">用户访谈
+  ↓
+会议记录
+  ↓
+需求整理
+  ↓
+用户画像
+  ↓
+需求分析
+  ↓
+功能设计
+  ↓
+PRD撰写
+  ↓
+评审修改
+</code></pre>
+<h3 id="33-当前问题">3.3 当前问题</h3>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>信息碎片化</td>
+<td>访谈、会议、竞品资料分散，需求容易遗漏</td>
+</tr>
+<tr>
+<td>重复整理成本高</td>
+<td>同一份信息被反复整理、排版、改写</td>
+</tr>
+<tr>
+<td>新人经验不足</td>
+<td>缺少标准流程和模板，产出质量不稳定</td>
+</tr>
+<tr>
+<td>PRD质量依赖个人能力</td>
+<td>需求完整性、边界情况和验收标准因人而异</td>
+</tr>
+</tbody></table>
+<h3 id="34-llm为什么适合解决该问题">3.4 LLM为什么适合解决该问题</h3>
+<p>LLM具备四类能力，正好匹配产品经理工作流：</p>
+<ol>
+<li>长文本理解：理解访谈记录、会议纪要和用户反馈。</li>
+<li>信息提取：从非结构化内容中提取用户问题、需求和场景。</li>
+<li>结构化生成：输出用户画像、需求清单、功能模块和PRD结构。</li>
+<li>逻辑检查：检查需求是否明确、功能是否合理、是否缺少边界情况。</li>
+</ol>
+<hr>
+<h2 id="4-用户画像">4. 用户画像</h2>
+<h3 id="41-用户1：产品经理">4.1 用户1：产品经理</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>角色</td>
+<td>产品经理</td>
+</tr>
+<tr>
+<td>工作场景</td>
+<td>负责新产品需求分析，需要从访谈和反馈中提炼需求</td>
+</tr>
+<tr>
+<td>当前任务</td>
+<td>整理需求素材、分析用户问题、设计功能、撰写PRD</td>
+</tr>
+<tr>
+<td>痛点</td>
+<td>信息整理耗时，需求容易遗漏，PRD修改频繁</td>
+</tr>
+<tr>
+<td>使用AI后</td>
+<td>AI自动完成洞察、需求拆解和PRD初稿，产品经理集中做判断</td>
+</tr>
+</tbody></table>
+<p><strong>真实业务案例：</strong></p>
+<p>产品经理收到50份用户访谈记录，需要整理成需求池。使用PRD Copilot后，AI自动提取用户问题、场景和机会点，并生成P0/P1/P2需求清单，产品经理只需确认和补充。</p>
+<h3 id="42-用户2：产品负责人">4.2 用户2：产品负责人</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>角色</td>
+<td>产品负责人</td>
+</tr>
+<tr>
+<td>工作场景</td>
+<td>需要快速评审多个需求方案</td>
+</tr>
+<tr>
+<td>当前任务</td>
+<td>判断需求是否清晰、功能是否合理、范围是否可控</td>
+</tr>
+<tr>
+<td>痛点</td>
+<td>不同PRD结构不一致，评审效率低；边界情况常被遗漏</td>
+</tr>
+<tr>
+<td>使用AI后</td>
+<td>Review Agent模拟评审视角，提前输出问题、建议和质量评分</td>
+</tr>
+</tbody></table>
+<p><strong>真实业务案例：</strong></p>
+<p>产品负责人需要在一周内评审多个需求方案。使用PRD Copilot后，每个方案自动生成PRD质量评分、问题列表和修改建议，负责人可以快速聚焦高风险需求。</p>
+<h3 id="43-用户3：产品新人实习生">4.3 用户3：产品新人/实习生</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>角色</td>
+<td>产品新人/实习生</td>
+</tr>
+<tr>
+<td>工作场景</td>
+<td>学习产品设计流程，完成第一个PRD</td>
+</tr>
+<tr>
+<td>当前任务</td>
+<td>模仿模板撰写PRD，理解需求分析和功能设计</td>
+</tr>
+<tr>
+<td>痛点</td>
+<td>缺少标准流程，不知道PRD应该包含什么，容易漏验收标准</td>
+</tr>
+<tr>
+<td>使用AI后</td>
+<td>AI提供结构化工作流和示例，帮助新人快速学习产品设计方法</td>
+</tr>
+</tbody></table>
+<p><strong>真实业务案例：</strong></p>
+<p>产品实习生需要为内容管理平台撰写第一份PRD。使用PRD Copilot后，AI生成标准PRD结构和验收标准示例，实习生可以基于初稿学习和修改。</p>
+<hr>
+<h2 id="5-用户使用流程（user-journey）">5. 用户使用流程（User Journey）</h2>
+<h3 id="51-完整流程">5.1 完整流程</h3>
+<pre><code class="language-text">Step 1 输入需求素材
+  ↓
+Step 2 Research Agent分析
+  ↓
+Step 3 Requirement Agent
+  ↓
+Step 4 Product Design Agent
+  ↓
+Step 5 PRD Writer Agent
+  ↓
+Step 6 Review Agent
+</code></pre>
+<h3 id="52-流程拆解">5.2 流程拆解</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>用户行为</th>
+<th>Agent处理</th>
+<th>用户获得</th>
+<th>决策价值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 输入需求素材</td>
+<td>输入访谈、会议纪要、竞品资料、用户反馈</td>
+<td>数据整理与信息识别</td>
+<td>统一的需求素材</td>
+<td>减少人工整理</td>
+</tr>
+<tr>
+<td>2 Research Agent分析</td>
+<td>等待分析</td>
+<td>理解资料，提取用户问题与机会</td>
+<td>用户洞察</td>
+<td>知道用户要什么</td>
+</tr>
+<tr>
+<td>3 Requirement Agent</td>
+<td>查看需求清单</td>
+<td>生成用户故事和优先级</td>
+<td>P0/P1/P2需求</td>
+<td>知道先做什么</td>
+</tr>
+<tr>
+<td>4 Product Design Agent</td>
+<td>查看方案</td>
+<td>生成功能模块、流程、页面结构</td>
+<td>产品方案</td>
+<td>知道怎么做</td>
+</tr>
+<tr>
+<td>5 PRD Writer Agent</td>
+<td>查看PRD</td>
+<td>生成标准PRD</td>
+<td>完整PRD初稿</td>
+<td>可以直接评审</td>
+</tr>
+<tr>
+<td>6 Review Agent</td>
+<td>查看评审结果</td>
+<td>模拟负责人评审</td>
+<td>问题、建议、质量评分</td>
+<td>知道哪里要改</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="6-ai-agent架构">6. AI Agent架构</h2>
+<h3 id="61-架构总览">6.1 架构总览</h3>
+<pre><code class="language-text">Research Agent
+  ↓
+Requirement Analyst Agent
+  ↓
+Product Designer Agent
+  ↓
+PRD Writer Agent
+  ↓
+Review Agent
+</code></pre>
+<h3 id="62-agent-1：research-agent">6.2 Agent 1：Research Agent</h3>
+<p><strong>职责：</strong></p>
+<p>理解输入资料，提炼用户洞察。</p>
+<p><strong>输入：</strong></p>
+<ul>
+<li>用户访谈</li>
+<li>会议纪要</li>
+<li>竞品资料</li>
+<li>用户反馈</li>
+</ul>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>识别用户问题。</li>
+<li>提取使用场景。</li>
+<li>发现需求机会。</li>
+<li>输出关键洞察。</li>
+</ol>
+<p><strong>输出：</strong></p>
+<ul>
+<li>用户问题</li>
+<li>需求机会</li>
+<li>关键洞察</li>
+</ul>
+<h3 id="63-agent-2：requirement-analyst-agent">6.3 Agent 2：Requirement Analyst Agent</h3>
+<p><strong>职责：</strong></p>
+<p>将洞察转化为用户故事和需求列表。</p>
+<p><strong>输入：</strong></p>
+<ul>
+<li>Research Agent输出的用户洞察</li>
+</ul>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>将用户问题转化为用户故事。</li>
+<li>评估用户价值和业务价值。</li>
+<li>输出P0/P1/P2优先级。</li>
+</ol>
+<p><strong>输出：</strong></p>
+<ul>
+<li>用户故事</li>
+<li>需求列表</li>
+<li>优先级</li>
+</ul>
+<p>示例用户故事：</p>
+<blockquote>
+<p>作为运营人员，我希望快速分析用户反馈，从而发现增长机会。</p>
+</blockquote>
+<h3 id="64-agent-3：product-designer-agent">6.4 Agent 3：Product Designer Agent</h3>
+<p><strong>职责：</strong></p>
+<p>辅助产品方案设计。</p>
+<p><strong>输入：</strong></p>
+<ul>
+<li>需求清单</li>
+<li>用户故事</li>
+</ul>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>拆解功能模块。</li>
+<li>设计用户流程。</li>
+<li>建议页面结构。</li>
+<li>定义业务规则。</li>
+</ol>
+<p><strong>输出：</strong></p>
+<ul>
+<li>功能模块</li>
+<li>用户流程</li>
+<li>页面结构</li>
+</ul>
+<h3 id="65-agent-4：prd-writer-agent">6.5 Agent 4：PRD Writer Agent</h3>
+<p><strong>职责：</strong></p>
+<p>生成标准PRD。</p>
+<p><strong>输入：</strong></p>
+<ul>
+<li>用户画像</li>
+<li>需求清单</li>
+<li>功能方案</li>
+</ul>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>组织PRD结构。</li>
+<li>补充功能说明。</li>
+<li>生成验收标准。</li>
+</ol>
+<p><strong>输出：</strong></p>
+<ul>
+<li>背景</li>
+<li>目标</li>
+<li>用户</li>
+<li>功能</li>
+<li>流程</li>
+<li>验收标准</li>
+</ul>
+<h3 id="66-agent-5：review-agent">6.6 Agent 5：Review Agent</h3>
+<p><strong>职责：</strong></p>
+<p>模拟产品负责人评审。</p>
+<p><strong>输入：</strong></p>
+<ul>
+<li>PRD Writer Agent生成的PRD</li>
+</ul>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>检查需求是否明确。</li>
+<li>检查功能是否合理。</li>
+<li>检查是否缺少边界情况。</li>
+<li>输出质量评分。</li>
+</ol>
+<p><strong>输出：</strong></p>
+<ul>
+<li>PRD质量评分</li>
+<li>问题列表</li>
+<li>修改建议</li>
+</ul>
+<hr>
+<h2 id="7-功能模块设计">7. 功能模块设计</h2>
+<h3 id="f1-多源需求输入">F1 多源需求输入</h3>
+<p><strong>功能说明：</strong></p>
+<p>支持文本、访谈记录、会议纪要、竞品分析等需求素材输入。</p>
+<p><strong>用户价值：</strong></p>
+<p>减少人工整理，统一需求信息来源。</p>
+<p><strong>输出：</strong></p>
+<ul>
+<li>结构化需求素材</li>
+<li>信息类型标签</li>
+</ul>
+<h3 id="f2-ai需求洞察">F2 AI需求洞察</h3>
+<p><strong>功能说明：</strong></p>
+<p>由Research Agent分析需求素材，输出用户问题、场景和机会点。</p>
+<p><strong>用户价值：</strong></p>
+<p>产品经理快速获得用户洞察，不需要逐份阅读访谈。</p>
+<p><strong>输出：</strong></p>
+<ul>
+<li>用户问题</li>
+<li>场景</li>
+<li>机会点</li>
+</ul>
+<h3 id="f3-用户画像生成">F3 用户画像生成</h3>
+<p><strong>功能说明：</strong></p>
+<p>生成用户角色卡，包括目标、行为和痛点。</p>
+<p><strong>用户价值：</strong></p>
+<p>帮助产品团队统一对目标用户的理解。</p>
+<p><strong>输出：</strong></p>
+<ul>
+<li>用户角色卡</li>
+<li>目标</li>
+<li>行为</li>
+<li>痛点</li>
+</ul>
+<h3 id="f4-ai需求池管理">F4 AI需求池管理</h3>
+<p><strong>功能说明：</strong></p>
+<p>生成需求列表，并管理优先级。</p>
+<p><strong>用户价值：</strong></p>
+<p>产品经理获得可维护的需求池，而不是零散笔记。</p>
+<p><strong>字段：</strong></p>
+<ul>
+<li>需求描述</li>
+<li>用户价值</li>
+<li>业务价值</li>
+<li>优先级</li>
+</ul>
+<h3 id="f5-功能方案设计">F5 功能方案设计</h3>
+<p><strong>功能说明：</strong></p>
+<p>由Product Designer Agent生成功能模块、页面流程和业务规则。</p>
+<p><strong>用户价值：</strong></p>
+<p>产品经理可以快速评估产品方案，而不是从零设计。</p>
+<p><strong>输出：</strong></p>
+<ul>
+<li>功能模块</li>
+<li>页面流程</li>
+<li>业务规则</li>
+</ul>
+<h3 id="f6-prd自动生成">F6 PRD自动生成</h3>
+<p><strong>功能说明：</strong></p>
+<p>由PRD Writer Agent生成标准PRD结构。</p>
+<p><strong>用户价值：</strong></p>
+<p>PRD初稿可评审、可修改，减少重复撰写。</p>
+<p><strong>输出：</strong></p>
+<ul>
+<li>标准PRD</li>
+<li>功能说明</li>
+<li>验收标准</li>
+</ul>
+<h3 id="f7-ai-prd-review">F7 AI PRD Review</h3>
+<p><strong>功能说明：</strong></p>
+<p>由Review Agent检查PRD质量和完整性。</p>
+<p><strong>用户价值：</strong></p>
+<p>在正式评审前提前发现问题，降低返工成本。</p>
+<p><strong>输出：</strong></p>
+<ul>
+<li>问题列表</li>
+<li>修改建议</li>
+<li>质量评分</li>
+</ul>
+<hr>
+<h2 id="8-竞品分析">8. 竞品分析</h2>
+<h3 id="81-chatgpt">8.1 ChatGPT</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品定位</td>
+<td>通用AI助手</td>
+</tr>
+<tr>
+<td>优势</td>
+<td>通用能力强，理解文本灵活</td>
+</tr>
+<tr>
+<td>不足</td>
+<td>缺少产品经理工作流，不主动拆解需求</td>
+</tr>
+<tr>
+<td>PRD Copilot机会</td>
+<td>提供从需求洞察到PRD评审的完整链路</td>
+</tr>
+</tbody></table>
+<h3 id="82-notion-ai">8.2 Notion AI</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品定位</td>
+<td>文档与知识管理AI</td>
+</tr>
+<tr>
+<td>优势</td>
+<td>文档组织能力强</td>
+</tr>
+<tr>
+<td>不足</td>
+<td>缺少需求理解和产品设计能力</td>
+</tr>
+<tr>
+<td>PRD Copilot机会</td>
+<td>面向产品经理的垂直工作流Agent</td>
+</tr>
+</tbody></table>
+<h3 id="83-jira-ai">8.3 Jira AI</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品定位</td>
+<td>研发协作与项目管理AI</td>
+</tr>
+<tr>
+<td>优势</td>
+<td>研发协作和任务管理强</td>
+</tr>
+<tr>
+<td>不足</td>
+<td>产品设计能力有限</td>
+</tr>
+<tr>
+<td>PRD Copilot机会</td>
+<td>覆盖PRD撰写前的产品设计阶段</td>
+</tr>
+</tbody></table>
+<h3 id="84-竞品总结">8.4 竞品总结</h3>
+<table>
+<thead>
+<tr>
+<th>产品</th>
+<th>解决什么</th>
+<th>未解决什么</th>
+<th>PRD Copilot机会</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ChatGPT</td>
+<td>通用文本生成</td>
+<td>缺少产品工作流</td>
+<td>垂直Agent工作流</td>
+</tr>
+<tr>
+<td>Notion AI</td>
+<td>文档组织</td>
+<td>缺少需求理解</td>
+<td>需求到PRD的转化</td>
+</tr>
+<tr>
+<td>Jira AI</td>
+<td>研发协作</td>
+<td>缺少产品设计</td>
+<td>产品设计到评审的闭环</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="9-mvp设计">9. MVP设计</h2>
+<h3 id="91-mvp目标">9.1 MVP目标</h3>
+<p>验证核心假设：</p>
+<blockquote>
+<p>AI是否能够降低产品经理需求分析和PRD撰写成本。</p>
+</blockquote>
+<h3 id="92-mvp必须包含">9.2 MVP必须包含</h3>
+<ol>
+<li>需求素材输入</li>
+<li>用户画像生成</li>
+<li>需求拆解</li>
+<li>功能设计</li>
+<li>PRD生成</li>
+<li>AI Review</li>
+</ol>
+<h3 id="93-mvp暂不包含">9.3 MVP暂不包含</h3>
+<ul>
+<li>实时协作</li>
+<li>企业知识库</li>
+<li>复杂权限系统</li>
+</ul>
+<h3 id="94-mvp成功标准">9.4 MVP成功标准</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PRD初稿生成时间</td>
+<td>30秒内</td>
+</tr>
+<tr>
+<td>需求完整率</td>
+<td>不低于85%</td>
+</tr>
+<tr>
+<td>用户修改时间</td>
+<td>降低50%</td>
+</tr>
+<tr>
+<td>AI Review覆盖度</td>
+<td>覆盖全部生成PRD</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>以上为模拟目标值，非真实商业数据。</p>
+</blockquote>
+<hr>
+<h2 id="10-产品指标体系">10. 产品指标体系</h2>
+<h3 id="101-north-star-metric">10.1 North Star Metric</h3>
+<p><strong>有效PRD产出效率</strong></p>
+<p>定义：单位时间内产出并达到评审标准的PRD数量。</p>
+<h3 id="102-效率指标">10.2 效率指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>定义</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PRD初稿生成时间</td>
+<td>从输入素材到PRD初稿的时间</td>
+<td>30秒内</td>
+</tr>
+<tr>
+<td>需求整理时间</td>
+<td>从访谈记录到需求池的时间</td>
+<td>降低60%</td>
+</tr>
+</tbody></table>
+<h3 id="103-质量指标">10.3 质量指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>定义</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PRD完整度评分</td>
+<td>Review Agent对PRD结构的评分</td>
+<td>不低于85分</td>
+</tr>
+<tr>
+<td>需求遗漏率</td>
+<td>用户确认后补充的需求比例</td>
+<td>不高于15%</td>
+</tr>
+<tr>
+<td>验收标准覆盖度</td>
+<td>核心功能具有验收标准的比例</td>
+<td>不低于90%</td>
+</tr>
+</tbody></table>
+<h3 id="104-体验指标">10.4 体验指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>定义</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户满意度</td>
+<td>产品经理对PRD初稿满意度</td>
+<td>4分以上（5分制）</td>
+</tr>
+<tr>
+<td>持续使用意愿</td>
+<td>是否愿意纳入正式工作流</td>
+<td>不低于70%</td>
+</tr>
+</tbody></table>
+<h3 id="105-业务指标">10.5 业务指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>定义</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需求评审通过率</td>
+<td>PRD一次评审通过比例</td>
+<td>提升30%</td>
+</tr>
+<tr>
+<td>PRD返工次数</td>
+<td>评审后大幅修改次数</td>
+<td>降低50%</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>所有指标均为模拟验证指标，非真实商业数据。</p>
+</blockquote>
+<hr>
+<h2 id="11-portfolio-story">11. Portfolio Story</h2>
+<h3 id="111-产品背景">11.1 产品背景</h3>
+<p>产品经理大量时间消耗在信息整理和PRD撰写上，真正用于需求判断的时间不足。</p>
+<h3 id="112-用户痛点">11.2 用户痛点</h3>
+<p>信息碎片化、重复整理成本高、新人经验不足、PRD质量依赖个人能力。</p>
+<h3 id="113-ai机会">11.3 AI机会</h3>
+<p>LLM具备长文本理解、信息提取、结构化生成和逻辑检查能力，适合辅助产品经理工作流。</p>
+<h3 id="114-agent设计">11.4 Agent设计</h3>
+<p>五个Agent分别负责研究、需求、设计、写作和评审，形成完整的产品经理工作流。</p>
+<h3 id="115-产品方案">11.5 产品方案</h3>
+<p>F1至F7覆盖需求输入、洞察、画像、需求池、功能设计、PRD生成和AI Review。</p>
+<h3 id="116-mvp验证">11.6 MVP验证</h3>
+<p>验证AI能否降低需求分析和PRD撰写成本，并通过效率、质量、体验、业务四类指标衡量。</p>
+<h3 id="117-未来规划">11.7 未来规划</h3>
+<ul>
+<li>实时协作</li>
+<li>企业知识库</li>
+<li>团队模板</li>
+<li>与Jira、Notion等工具打通</li>
+</ul>
+<hr>
+<h2 id="12-现有ui一致性检查与页面修改建议">12. 现有UI一致性检查与页面修改建议</h2>
+<h3 id="121-检查结论">12.1 检查结论</h3>
+<p>现有原型保留了完整功能页面，但UI仍偏向“PRD文档生成工具”，与V2.0“AI Product Manager Agent”定位不完全一致。</p>
+<h3 id="122-需要修改的页面">12.2 需要修改的页面</h3>
+<table>
+<thead>
+<tr>
+<th>页面</th>
+<th>现状</th>
+<th>需要修改</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文档工作台</td>
+<td>左侧大纲、中间文档、右侧配置</td>
+<td>增加Research Agent“需求洞察”阶段</td>
+</tr>
+<tr>
+<td>PRD文档画布</td>
+<td>用户画像、需求清单、功能模块、大纲、验收标准、风险</td>
+<td>增加AI Review质量评分和问题列表</td>
+</tr>
+<tr>
+<td>需求清单</td>
+<td>只有需求标题和用户故事</td>
+<td>增加用户价值、业务价值、优先级字段</td>
+</tr>
+<tr>
+<td>功能模块</td>
+<td>只有模块名称和描述</td>
+<td>增加页面流程和业务规则</td>
+</tr>
+<tr>
+<td>产品官网</td>
+<td>六步流程较通用</td>
+<td>改为五个Agent工作流</td>
+</tr>
+<tr>
+<td>项目PDF</td>
+<td>当前为17页方案PDF</td>
+<td>按V2.0结构重新组织</td>
+</tr>
+</tbody></table>
+<h3 id="123-修改原则">12.3 修改原则</h3>
+<ol>
+<li>不删除已有功能页面。</li>
+<li>在现有页面上增加Agent阶段和评审模块。</li>
+<li>保持PRD Copilot名称和核心功能方向不变。</li>
+</ol>
+</article>
+    <div class="doc-footer">陈莹莹 · AI产品经理作品集</div>
+  </main>
+</div>
+</body>
+</html>

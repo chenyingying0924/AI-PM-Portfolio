@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --bg: #f4ecdf; --surface: #fdf9f1; --ink: #3b3329; --muted: #77695a; --sky: #7ba8cc; --warm: #b97946; --border: rgba(59,51,41,.14); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", sans-serif; background: var(--bg); }
+  .slide { width: 1280px; height: 720px; padding: 44px 56px; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; page-break-after: always; overflow: hidden; }
+  .cover { width: 1280px; height: 720px; background: var(--bg); color: var(--ink); padding: 70px 80px; display: flex; flex-direction: column; justify-content: center; page-break-after: always; }
+  .cover .product { font-size: 14px; letter-spacing: .18em; color: var(--sky); font-weight: 800; text-transform: uppercase; }
+  .cover h1 { font-size: 58px; line-height: 1.08; letter-spacing: -.03em; margin-top: 18px; }
+  .cover p { color: var(--muted); font-size: 17px; line-height: 1.6; margin-top: 22px; max-width: 820px; }
+  .cover .tags { margin-top: 28px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .cover .tags span { border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; font-size: 11px; color: var(--muted); }
+  .top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 24px; }
+  .kicker { font-size: 11px; font-weight: 800; letter-spacing: .16em; color: var(--sky); text-transform: uppercase; }
+  h1 { font-size: 34px; line-height: 1.15; letter-spacing: -.02em; margin-top: 10px; }
+  .subtitle { color: var(--muted); font-size: 12.5px; margin-top: 8px; }
+  .content { flex: 1; display: flex; flex-direction: column; gap: 10px; margin-top: 18px; min-height: 0; }
+  .hypothesis { background: var(--ink); color: var(--bg); border-radius: 10px; padding: 14px 18px; font-size: 14px; font-weight: 800; }
+  .hypothesis span { color: var(--sky); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; }
+  .card.tone { border-color: var(--sky); }
+  .card.tone2 { border-color: var(--warm); }
+  .card h3 { font-size: 13px; margin-bottom: 6px; }
+  .card p, .card li { font-size: 11px; line-height: 1.45; color: var(--muted); }
+  .card ul { list-style: none; }
+  .card li { padding: 3px 0 3px 12px; position: relative; }
+  .card li::before { content: ""; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: var(--sky); }
+  .table { width: 100%; border-collapse: collapse; font-size: 10.5px; line-height: 1.4; }
+  .table th, .table td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  .table th { background: var(--surface); font-weight: 800; }
+  .opp-row { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 8px; }
+  .opp-row .cell { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .opp-row .cell b { display: block; font-size: 9px; color: var(--muted); margin-bottom: 2px; }
+  .opp-row .cell p { font-size: 10.5px; line-height: 1.4; color: var(--ink); }
+  .opp-row .cell.opp { border-color: var(--sky); }
+  .flow { display: flex; gap: 6px; align-items: stretch; }
+  .flow-step { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .flow-step b { display: block; font-size: 12px; }
+  .flow-step span { display: block; font-size: 9px; color: var(--muted); margin-top: 3px; }
+  .flow-arrow { align-self: center; color: var(--sky); font-weight: 900; font-size: 16px; }
+  .prompt-box { background: var(--ink); color: var(--surface); border-radius: 10px; padding: 14px 16px; font-size: 10px; line-height: 1.6; white-space: pre-wrap; }
+  .prompt-box b { color: var(--sky); }
+  .hint { background: var(--surface); border: 1px dashed var(--border); border-radius: 8px; padding: 8px 11px; font-size: 10px; color: var(--muted); }
+  .shot { margin-top: 12px; }
+  .shot img { width: 100%; max-height: 230px; object-fit: cover; object-position: top; border-radius: 10px; border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+    <section class="cover">
+      <div class="product">InsightPulse</div>
+      <h1>AI海外用户声音洞察 Agent</h1>
+      <p>AI用户洞察与增长决策Agent：把用户声音转化为业务决策。</p>
+      <div class="tags"><span>需求分析</span><span>产品设计</span><span>Agent工作流</span><span>MVP验证</span></div>
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>02 / 17</span></div>
+      <div class="kicker">01 · PROJECT OVERVIEW</div>
+      <h1>项目概览</h1>
+      <p class="subtitle">AI用户洞察与增长决策Agent：把用户声音转化为业务决策。</p>
+      <div class="content">
+      <div class="hypothesis">核心假设：<span>AI能否帮助出海品牌快速完成用户洞察，并辅助业务决策</span></div>
+      <div class="grid3">
+        <div class="card"><h3>产品定位</h3><ul><li>面向出海品牌团队</li><li>AI用户洞察与增长决策Agent</li><li>保留InsightPulse核心方向</li></ul></div>
+        <div class="card tone"><h3>核心价值</h3><ul><li>用户痛点洞察</li><li>产品优化建议</li><li>市场机会发现</li><li>内容增长方向</li></ul></div>
+        <div class="card tone2"><h3>决策原则</h3><ul><li>AI不仅分析数据</li><li>而是辅助业务决策</li><li>输出优先级建议</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>03 / 17</span></div>
+      <div class="kicker">02 · MARKET NEEDS</div>
+      <h1>海外品牌用户声音分析的问题</h1>
+      <p class="subtitle">问题不是没有反馈，而是反馈没有被转化为决策。</p>
+      <div class="content">
+      <div class="grid2">
+        <div class="card"><h3>反馈分散</h3><p>Amazon、TikTok、Reddit、客服反馈分散在不同平台，团队难以统一分析。</p></div>
+        <div class="card"><h3>人工整理慢</h3><p>人工收集、Excel整理、人工分类，5000条评论需要数天。</p></div>
+        <div class="card tone"><h3>判断主观</h3><p>不同人判断标准不一致，容易忽略低词频但高价值的需求。</p></div>
+        <div class="card tone2"><h3>隐藏需求难发现</h3><p>只看高频表达，看不到用户没说出口的潜在需求。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>04 / 17</span></div>
+      <div class="kicker">03 · USER PERSONAS</div>
+      <h1>目标用户画像</h1>
+      <p class="subtitle">三类用户共同需要“从反馈到决策”的能力。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>品牌市场负责人</h3><p>新品进入美国市场，需要分析5000条Amazon评论，判断市场机会。</p></div>
+        <div class="card tone"><h3>产品经理</h3><p>需要判断“电池不耐用”是个别抱怨还是核心问题，并确定迭代优先级。</p></div>
+        <div class="card tone2"><h3>内容运营</h3><p>需要基于真实用户声音生成TikTok选题、广告方向和营销角度。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>05 / 17</span></div>
+      <div class="kicker">04 · USER JOURNEY</div>
+      <h1>用户使用流程</h1>
+      <p class="subtitle">从数据上传到内容选题的完整决策链路。</p>
+      <div class="content">
+      <div class="flow">
+        <div class="flow-step"><b>上传</b><span>评论数据</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>理解</b><span>AI理解内容</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>情感</b><span>分析情绪</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>聚类</b><span>主题识别</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>痛点</b><span>问题定位</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>排序</b><span>机会优先级</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>建议</b><span>产品建议</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>选题</b><span>内容方向</span></div>
+      </div>
+      <div class="hint">每个阶段都有明确输出，用户可以看到AI的推理过程，而不是黑盒结论。</div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>06 / 17</span></div>
+      <div class="kicker">05 · AGENT ARCHITECTURE</div>
+      <h1>AI Agent架构总览</h1>
+      <p class="subtitle">四个Agent协作完成“用户声音到业务决策”的链路。</p>
+      <div class="content">
+      <div class="grid4">
+        <div class="card"><h3>Agent 1</h3><p>Data Understanding Agent</p><p>数据清洗、语言识别、评论理解</p></div>
+        <div class="card tone"><h3>Agent 2</h3><p>Insight Analysis Agent</p><p>情感分析、痛点聚类、需求提取</p></div>
+        <div class="card tone2"><h3>Agent 3</h3><p>Product Strategy Agent</p><p>产品建议、优先级排序</p></div>
+        <div class="card"><h3>Agent 4</h3><p>Growth Content Agent</p><p>内容方向、营销角度</p></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>07 / 17</span></div>
+      <div class="kicker">06 · AGENT 1</div>
+      <h1>Agent 1：Data Understanding Agent</h1>
+      <p class="subtitle">让AI先理解数据，再谈洞察。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><ul><li>Amazon Review</li><li>TikTok评论</li><li>Reddit反馈</li><li>CSV文件</li></ul></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>数据清洗</li><li>语言识别</li><li>评论理解</li><li>无效数据过滤</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>结构化评论</li><li>渠道与语言标签</li><li>可分析数量</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>08 / 17</span></div>
+      <div class="kicker">07 · AGENT 2</div>
+      <h1>Agent 2：Insight Analysis Agent</h1>
+      <p class="subtitle">从评论中提取情感、主题与用户需求。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><p>结构化评论数据</p></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>情感分析</li><li>痛点聚类</li><li>用户需求提取</li><li>代表评论选择</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>情感分布</li><li>主题聚类</li><li>影响人数</li><li>典型案例</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>09 / 17</span></div>
+      <div class="kicker">08 · AGENT 3</div>
+      <h1>Agent 3：Product Strategy Agent</h1>
+      <p class="subtitle">评估影响、情绪与商业价值，输出优先级。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><p>用户痛点与需求</p></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>影响人数评估</li><li>情绪强度评估</li><li>商业价值评估</li><li>P0/P1/P2排序</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>用户问题</li><li>原因分析</li><li>产品机会</li><li>建议方案</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>10 / 17</span></div>
+      <div class="kicker">09 · AGENT 4</div>
+      <h1>Agent 4：Growth Content Agent</h1>
+      <p class="subtitle">把洞察转化为内容增长方向。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card"><h3>输入</h3><p>优先级建议与目标平台</p></div>
+        <div class="card tone"><h3>处理逻辑</h3><ul><li>用户痛点驱动选题</li><li>平台特征适配</li><li>营销角度生成</li></ul></div>
+        <div class="card tone2"><h3>输出</h3><ul><li>TikTok选题</li><li>广告方向</li><li>营销角度</li></ul></div>
+      </div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>11 / 17</span></div>
+      <div class="kicker">10 · FEATURES</div>
+      <h1>功能模块设计</h1>
+      <p class="subtitle">F1至F7覆盖从数据输入到决策报告的全流程。</p>
+      <div class="content">
+      <table class="table">
+        <thead><tr><th>功能</th><th>用户价值</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td>F1 多渠道数据输入</td><td>Amazon、TikTok、Reddit、CSV</td><td>已实现</td></tr>
+          <tr><td>F2 AI用户情感分析</td><td>情绪比例、趋势、代表评论</td><td>已实现</td></tr>
+          <tr><td>F3 用户痛点聚类</td><td>主题、影响人数、典型案例</td><td>已实现</td></tr>
+          <tr><td>F4 需求优先级排序</td><td>P0/P1/P2机制</td><td>已实现</td></tr>
+          <tr><td>F5 AI产品机会生成</td><td>问题、原因、机会、方案</td><td>已实现</td></tr>
+          <tr><td>F6 AI内容增长建议</td><td>TikTok选题、广告方向</td><td>已实现</td></tr>
+          <tr><td>F7 洞察报告生成</td><td>JSON、PRD、PDF</td><td>已实现</td></tr>
+        </tbody>
+      </table>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>12 / 17</span></div>
+      <div class="kicker">11 · COMPETITIVE ANALYSIS</div>
+      <h1>竞品分析</h1>
+      <p class="subtitle">InsightPulse的机会不是做通用AI，而是做垂直决策闭环。</p>
+      <div class="content">
+      <table class="table">
+        <thead><tr><th>产品</th><th>定位</th><th>优势</th><th>不足</th><th>InsightPulse机会</th></tr></thead>
+        <tbody>
+          <tr><td>ChatGPT</td><td>通用AI助手</td><td>理解能力强</td><td>无结构化决策链路</td><td>Agent化工作流</td></tr>
+          <tr><td>MonkeyLearn</td><td>文本分类工具</td><td>分类模型成熟</td><td>不输出业务建议</td><td>痛点到机会的转化</td></tr>
+          <tr><td>Glean</td><td>企业知识搜索</td><td>企业知识整合强</td><td>不分析外部用户声音</td><td>垂直出海场景</td></tr>
+        </tbody>
+      </table>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>13 / 17</span></div>
+      <div class="kicker">12 · MVP DESIGN</div>
+      <h1>MVP设计</h1>
+      <p class="subtitle">验证AI能否帮助品牌快速完成用户洞察。</p>
+      <div class="content">
+      <div class="grid2">
+        <div class="card"><h3>MVP必须包含</h3><ul><li>CSV评论上传</li><li>AI分析</li><li>痛点聚类</li><li>机会生成</li><li>报告导出</li></ul></div>
+        <div class="card tone"><h3>暂不包含</h3><ul><li>实时API接入</li><li>复杂数据采集</li><li>多账号权限体系</li><li>跨市场实时看板</li></ul></div>
+      </div>
+      <div class="hint">成功标准：分析完成率不低于90%，报告导出率不低于60%，人工分析时间减少50%以上。</div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>14 / 17</span></div>
+      <div class="kicker">13 · AI WORKFLOW</div>
+      <h1>Agent工作流</h1>
+      <p class="subtitle">从原始反馈到可执行洞察，全程可解释。</p>
+      <div class="content">
+      <div class="flow">
+        <div class="flow-step"><b>Agent1</b><span>数据理解</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Agent2</b><span>情感与聚类</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Agent3</b><span>产品策略</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>Agent4</b><span>增长内容</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>排序</b><span>P0/P1/P2</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><b>输出</b><span>报告导出</span></div>
+      </div>
+    </div>
+      <div class="shot"><img src="../assets/dashboard.png" alt="原型截图"></div>
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>15 / 17</span></div>
+      <div class="kicker">14 · METRICS</div>
+      <h1>数据指标体系</h1>
+      <p class="subtitle">从用户、效率、质量、商业四个维度衡量产品价值。</p>
+      <div class="content">
+      <table class="table">
+        <thead><tr><th>类型</th><th>指标</th><th>目标</th></tr></thead>
+        <tbody>
+          <tr><td>用户</td><td>分析完成率</td><td>不低于90%</td></tr>
+          <tr><td>用户</td><td>报告导出率</td><td>不低于60%</td></tr>
+          <tr><td>效率</td><td>人工分析时间减少</td><td>50%以上</td></tr>
+          <tr><td>质量</td><td>AI洞察准确性</td><td>4分以上（5分制）</td></tr>
+          <tr><td>商业</td><td>有效市场机会数量</td><td>每周不少于2个</td></tr>
+        </tbody>
+      </table>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>16 / 17</span></div>
+      <div class="kicker">15 · RESULTS & ROADMAP</div>
+      <h1>模拟结果与迭代方向</h1>
+      <p class="subtitle">模拟目标值，非真实商业数据。</p>
+      <div class="content">
+      <table class="table">
+        <thead><tr><th>指标</th><th>目标</th></tr></thead>
+        <tbody>
+          <tr><td>洞察报告生成时间</td><td>30秒内</td></tr>
+          <tr><td>痛点识别准确率</td><td>不低于80%</td></tr>
+          <tr><td>内容选题采用率</td><td>不低于60%</td></tr>
+          <tr><td>产品改进采纳率</td><td>不低于40%</td></tr>
+        </tbody>
+      </table>
+      <div class="hint">迭代：V0.2趋势对比 → V0.3跨市场看板 → V0.4真实LLM接入</div>
+    </div>
+      
+    </section>
+  
+    <section class="slide">
+      <div class="top"><span>InsightPulse</span><span>17 / 17</span></div>
+      <div class="kicker">16 · PORTFOLIO VALUE</div>
+      <h1>作品集展示价值</h1>
+      <p class="subtitle">从问题发现到AI Agent设计，再到指标体系验证。</p>
+      <div class="content">
+      <div class="grid3">
+        <div class="card tone"><h3>产品故事线</h3><p>出海品牌面对大量用户声音，但不知道用户真正在意什么，AI辅助决策形成闭环。</p></div>
+        <div class="card"><h3>页面结构</h3><p>官网、原型、17页PDF、PRD V2.0、完整方案。</p></div>
+        <div class="card tone2"><h3>面试逻辑</h3><p>发现问题 → 定义机会 → 设计Agent → 功能设计 → 指标体系 → 结果反思。</p></div>
+      </div>
+    </div>
+      
+    </section>
+  </body>
+</html>

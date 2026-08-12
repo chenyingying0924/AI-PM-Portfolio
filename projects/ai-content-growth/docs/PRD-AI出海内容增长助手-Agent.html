@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRD：AI出海内容增长助手 Agent</title>
+<style>
+:root {
+  --bg: #f2f5f8;
+  --surface: #ffffff;
+  --ink: #17212b;
+  --muted: #5c6b7a;
+  --dim: #8a97a6;
+  --border: rgba(23, 33, 43, .1);
+  --border-strong: rgba(23, 33, 43, .16);
+  --accent: #4f5fd8;
+  --accent-2: #4450c9;
+  --accent-soft: rgba(79, 95, 216, .08);
+  --code-bg: #0f1722;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Avenir Next", "SF Pro Display", "Helvetica Neue", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.doc-shell {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.toc {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  padding: 30px 22px;
+  background: #eef2f6;
+  border-right: 1px solid var(--border);
+}
+
+.doc-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-2);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.doc-home:hover {
+  color: var(--accent);
+}
+
+.toc-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+
+.toc nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.toc a:hover {
+  background: rgba(79, 95, 216, .08);
+  color: var(--accent-2);
+}
+
+.toc a.toc-h3 {
+  padding-left: 20px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.doc-main {
+  min-width: 0;
+  padding: 52px 56px 72px;
+}
+
+.doc-head {
+  margin-bottom: 28px;
+}
+
+.doc-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-2);
+  background: var(--accent-soft);
+  border: 1px solid rgba(79, 95, 216, .18);
+  border-radius: 999px;
+  padding: 4px 11px;
+  margin-bottom: 14px;
+}
+
+.doc-head h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.doc-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 42px 48px;
+  max-width: 920px;
+}
+
+.doc-content h1 {
+  font-size: 26px;
+  margin: 34px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+
+.doc-content h2 {
+  font-size: 21px;
+  margin: 34px 0 12px;
+  line-height: 1.35;
+  letter-spacing: -.01em;
+}
+
+.doc-content h3 {
+  font-size: 16px;
+  margin: 26px 0 10px;
+  line-height: 1.4;
+}
+
+.doc-content h4 {
+  font-size: 14px;
+  margin: 20px 0 8px;
+}
+
+.doc-content p {
+  margin: 10px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content strong {
+  color: var(--ink);
+}
+
+.doc-content ul,
+.doc-content ol {
+  margin: 10px 0 10px 22px;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content li {
+  margin: 5px 0;
+}
+
+.doc-content blockquote {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  color: #33434f;
+  font-size: 14px;
+}
+
+.doc-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.doc-content th,
+.doc-content td {
+  border: 1px solid var(--border);
+  padding: 9px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-content th {
+  background: #eef2f6;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc-content code {
+  font-family: "SF Mono", "Menlo", monospace;
+  font-size: 12px;
+  background: #edf1f5;
+  color: #37475a;
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+
+.doc-content pre {
+  margin: 16px 0;
+  padding: 16px 18px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.doc-content pre code {
+  background: transparent;
+  color: #dbe4ef;
+  padding: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.doc-footer {
+  margin-top: 18px;
+  color: var(--dim);
+  font-size: 11px;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .doc-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .toc {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 18px;
+  }
+
+  .toc nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .doc-main {
+    padding: 28px 18px 48px;
+  }
+
+  .doc-content {
+    padding: 24px 20px;
+    border-radius: 8px;
+  }
+
+  .doc-head h1 {
+    font-size: 26px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="doc-shell">
+  <aside class="toc">
+    <a class="doc-home" href="../../index.html">← 返回作品集</a>
+    <div class="toc-title">目录</div>
+    <nav><a class="" href="#1-文档信息">1. 文档信息</a>
+<a class="" href="#2-产品概述">2. 产品概述</a>
+<a class="toc-h3" href="#21-产品背景">2.1 产品背景</a>
+<a class="toc-h3" href="#22-产品定位">2.2 产品定位</a>
+<a class="toc-h3" href="#23-产品目标">2.3 产品目标</a>
+<a class="toc-h3" href="#24-成功标准">2.4 成功标准</a>
+<a class="toc-h3" href="#25-产品原则">2.5 产品原则</a>
+<a class="" href="#3-目标用户与使用场景">3. 目标用户与使用场景</a>
+<a class="toc-h3" href="#31-用户画像">3.1 用户画像</a>
+<a class="toc-h3" href="#32-核心使用场景">3.2 核心使用场景</a>
+<a class="" href="#4-产品范围">4. 产品范围</a>
+<a class="toc-h3" href="#41-mvp范围内">4.1 MVP范围内</a>
+<a class="toc-h3" href="#42-mvp范围外">4.2 MVP范围外</a>
+<a class="" href="#5-功能需求">5. 功能需求</a>
+<a class="toc-h3" href="#f1-爆款内容拆解agent">F1 爆款内容拆解Agent</a>
+<a class="toc-h3" href="#f2-ai内容重写agent">F2 AI内容重写Agent</a>
+<a class="toc-h3" href="#f3-品牌知识库">F3 品牌知识库</a>
+<a class="toc-h3" href="#f4-内容质量评估">F4 内容质量评估</a>
+<a class="toc-h3" href="#f5-agent工作流">F5 Agent工作流</a>
+<a class="toc-h3" href="#f6-内容管理与交付">F6 内容管理与交付</a>
+<a class="toc-h3" href="#f7-官网转化">F7 官网转化</a>
+<a class="" href="#6-页面与交互需求">6. 页面与交互需求</a>
+<a class="toc-h3" href="#61-页面清单">6.1 页面清单</a>
+<a class="toc-h3" href="#62-关键交互状态">6.2 关键交互状态</a>
+<a class="toc-h3" href="#63-响应式要求">6.3 响应式要求</a>
+<a class="" href="#7-数据与埋点需求">7. 数据与埋点需求</a>
+<a class="toc-h3" href="#71-核心数据模型">7.1 核心数据模型</a>
+<a class="toc-h3" href="#72-埋点事件">7.2 埋点事件</a>
+<a class="" href="#8-非功能需求">8. 非功能需求</a>
+<a class="toc-h3" href="#81-性能">8.1 性能</a>
+<a class="toc-h3" href="#82-兼容性">8.2 兼容性</a>
+<a class="toc-h3" href="#83-可访问性">8.3 可访问性</a>
+<a class="toc-h3" href="#84-数据与安全">8.4 数据与安全</a>
+<a class="" href="#9-验收与发布检查">9. 验收与发布检查</a>
+<a class="toc-h3" href="#91-功能验收清单">9.1 功能验收清单</a>
+<a class="toc-h3" href="#92-交付前检查">9.2 交付前检查</a>
+<a class="" href="#10-指标与mvp验证">10. 指标与MVP验证</a>
+<a class="toc-h3" href="#101-验证假设">10.1 验证假设</a>
+<a class="toc-h3" href="#102-测试用户">10.2 测试用户</a>
+<a class="toc-h3" href="#103-测试任务">10.3 测试任务</a>
+<a class="toc-h3" href="#104-模拟验证指标">10.4 模拟验证指标</a>
+<a class="" href="#11-里程碑与迭代计划">11. 里程碑与迭代计划</a>
+<a class="" href="#12-风险与依赖">12. 风险与依赖</a>
+<a class="" href="#13-附录">13. 附录</a>
+<a class="toc-h3" href="#131-prompt模板索引">13.1 Prompt模板索引</a>
+<a class="toc-h3" href="#132-相关文件">13.2 相关文件</a></nav>
+  </aside>
+  <main class="doc-main">
+    <div class="doc-head">
+      <span class="doc-tag">产品需求文档</span>
+      <h1>PRD：AI出海内容增长助手 Agent</h1>
+    </div>
+    <article class="doc-content"><h1 id="prd：ai出海内容增长助手-agent（brandpilot-ai）">PRD：AI出海内容增长助手 Agent（BrandPilot AI）</h1>
+<h2 id="1-文档信息">1. 文档信息</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文档名称</td>
+<td>AI出海内容增长助手 Agent 产品需求文档（MVP）</td>
+</tr>
+<tr>
+<td>产品名称</td>
+<td>BrandPilot AI</td>
+</tr>
+<tr>
+<td>文档版本</td>
+<td>V1.0</td>
+</tr>
+<tr>
+<td>文档状态</td>
+<td>MVP评审稿</td>
+</tr>
+<tr>
+<td>文档作者</td>
+<td>陈莹莹（AI产品）</td>
+</tr>
+<tr>
+<td>创建日期</td>
+<td>2026-08-12</td>
+</tr>
+<tr>
+<td>关联文档</td>
+<td><code>docs/full-solution.md</code>、<code>docs/portfolio-pages.md</code></td>
+</tr>
+<tr>
+<td>关联原型</td>
+<td><code>agent-app/index.html</code>（可交互Agent原型）</td>
+</tr>
+<tr>
+<td>关联官网</td>
+<td><code>landing/index.html</code>（BrandPilot AI产品官网）</td>
+</tr>
+</tbody></table>
+<h2 id="2-产品概述">2. 产品概述</h2>
+<h3 id="21-产品背景">2.1 产品背景</h3>
+<p>出海品牌在海外社媒营销中普遍面临四类问题：</p>
+<ol>
+<li>多语言内容产能不足，非英语市场覆盖慢。</li>
+<li>本地化停留在翻译层面，缺少文化语境与用户场景。</li>
+<li>爆款内容经验难以沉淀和复用，每次创作从零开始。</li>
+<li>内容生产链路长，评审、改稿、平台适配重复劳动多。</li>
+</ol>
+<h3 id="22-产品定位">2.2 产品定位</h3>
+<p>BrandPilot AI是一款面向出海品牌团队的AI Native社媒内容生产Agent：</p>
+<p>以品牌知识库为底座，将竞品爆款拆解为可复用结构，再按目标市场、人群与平台生成多语言内容，并用内容质量评分驱动人工确认。</p>
+<h3 id="23-产品目标">2.3 产品目标</h3>
+<p>MVP阶段不追求商业级SaaS能力，只验证一个核心假设：</p>
+<blockquote>
+<p>AI能否帮助出海品牌提升海外社媒内容生产效率。</p>
+</blockquote>
+<h3 id="24-成功标准">2.4 成功标准</h3>
+<p>MVP验证通过条件：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>目标值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单条多语言内容生产时间</td>
+<td>30至45分钟</td>
+<td>模拟目标，非真实商业数据</td>
+</tr>
+<tr>
+<td>人工修改轮次</td>
+<td>不超过2轮</td>
+<td>模拟目标</td>
+</tr>
+<tr>
+<td>首版通过率</td>
+<td>不低于75%</td>
+<td>模拟目标</td>
+</tr>
+<tr>
+<td>品牌调性一致率</td>
+<td>不低于80%</td>
+<td>模拟目标</td>
+</tr>
+<tr>
+<td>用户满意度</td>
+<td>4分以上（5分制）</td>
+<td>模拟目标</td>
+</tr>
+</tbody></table>
+<h3 id="25-产品原则">2.5 产品原则</h3>
+<ol>
+<li>AI生成，人工把关。</li>
+<li>结构化内容资产：爆款结构、品牌知识、内容评分可查询、可复用。</li>
+<li>结果可解释：评分必须给出理由，不做无解释输出。</li>
+<li>生成与评估分离，避免“自己写自己评分”的盲区。</li>
+<li>所有量化结果明确标注模拟属性，不虚构真实商业数据。</li>
+</ol>
+<h2 id="3-目标用户与使用场景">3. 目标用户与使用场景</h2>
+<h3 id="31-用户画像">3.1 用户画像</h3>
+<table>
+<thead>
+<tr>
+<th>画像</th>
+<th>用户角色</th>
+<th>核心任务</th>
+<th>核心痛点</th>
+<th>使用AI后的变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>品牌全球社媒负责人</td>
+<td>制定内容策略、管理多市场内容日历、把控品牌调性</td>
+<td>内容一致性难保证、评审链路长、多语言产能不足</td>
+<td>输入Brief和品牌知识库，AI先产出候选稿，负责人只做策略把关和终审</td>
+</tr>
+<tr>
+<td>B</td>
+<td>品牌内容创作者</td>
+<td>找选题、写脚本、改文案、平台适配</td>
+<td>创作灵感枯竭、爆款套路说不清、重复改稿</td>
+<td>竞品爆款一键拆解，AI按品牌卖点重写多个变体，创作者集中做创意判断</td>
+</tr>
+<tr>
+<td>C</td>
+<td>增长/投放操盘手</td>
+<td>生产付费与自然流量素材、跑A/B测试</td>
+<td>素材版本不够、测试周期长、爆款钩子难复制</td>
+<td>基于高表现内容快速生成钩子与卖点变体，测试节奏加快</td>
+</tr>
+</tbody></table>
+<h3 id="32-核心使用场景">3.2 核心使用场景</h3>
+<ol>
+<li>用户粘贴竞品文案或视频脚本，Agent输出结构化爆款拆解。</li>
+<li>用户选择多个目标市场与平台，Agent批量生成本地化内容变体。</li>
+<li>用户在品牌知识库中维护品牌定位、卖点、市场与禁忌，约束后续生成。</li>
+<li>用户对生成内容进行质量评估，依据评分和修改建议完成终稿。</li>
+<li>用户确认交付，内容写入内容记录并支持导出JSON。</li>
+</ol>
+<h2 id="4-产品范围">4. 产品范围</h2>
+<h3 id="41-mvp范围内">4.1 MVP范围内</h3>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>爆款内容拆解Agent</td>
+<td>竞品内容拆解为结构化爆款模板</td>
+</tr>
+<tr>
+<td>AI内容重写Agent</td>
+<td>多市场、多平台内容变体批量生成</td>
+</tr>
+<tr>
+<td>品牌知识库</td>
+<td>品牌定位、卖点、市场、语气、禁忌管理</td>
+</tr>
+<tr>
+<td>内容质量评估</td>
+<td>吸引力、转化潜力、平台适配度三维评分</td>
+</tr>
+<tr>
+<td>Agent工作流</td>
+<td>输入解析、Prompt处理、知识检索、LLM生成、质量检查、输出</td>
+</tr>
+<tr>
+<td>内容记录与交付</td>
+<td>爆款库、内容记录、确认交付、复制内容、导出JSON</td>
+</tr>
+<tr>
+<td>官网转化</td>
+<td>产品官网首页与Start free注册弹窗</td>
+</tr>
+</tbody></table>
+<h3 id="42-mvp范围外">4.2 MVP范围外</h3>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>暂不做原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>多平台自动发布</td>
+<td>需要平台API授权，后续迭代</td>
+</tr>
+<tr>
+<td>内容效果数据看板</td>
+<td>需要真实发布数据，后续迭代</td>
+</tr>
+<tr>
+<td>多账号与团队权限管理</td>
+<td>MVP聚焦单团队使用</td>
+</tr>
+<tr>
+<td>计费与支付系统</td>
+<td>不验证商业化闭环</td>
+</tr>
+<tr>
+<td>真实LLM模型接入</td>
+<td>MVP使用本地模拟引擎验证流程</td>
+</tr>
+<tr>
+<td>视频内容生成</td>
+<td>超出当前产品边界</td>
+</tr>
+</tbody></table>
+<h2 id="5-功能需求">5. 功能需求</h2>
+<h3 id="f1-爆款内容拆解agent">F1 爆款内容拆解Agent</h3>
+<h4 id="优先级：p0">优先级：P0</h4>
+<h4 id="用户故事">用户故事</h4>
+<p>作为品牌内容创作者，我希望把竞品文案或视频脚本拆解成用户画像、内容结构、情绪触发点、核心卖点和爆款原因，以便快速复用成功的爆款结构。</p>
+<h4 id="功能描述">功能描述</h4>
+<p>用户输入竞品文案、视频脚本或口播文字稿，Agent输出结构化爆款分析，并支持保存为内容模板。</p>
+<h4 id="输入">输入</h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>竞品文案/视频脚本</td>
+<td>是</td>
+<td>文本内容</td>
+</tr>
+<tr>
+<td>来源平台</td>
+<td>否</td>
+<td>TikTok、Instagram、YouTube Shorts</td>
+</tr>
+<tr>
+<td>账号类型</td>
+<td>否</td>
+<td>DTC品牌、生活博主、测评账号</td>
+</tr>
+</tbody></table>
+<h4 id="输出">输出</h4>
+<table>
+<thead>
+<tr>
+<th>输出项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户画像</td>
+<td>目标用户、核心诉求、消费场景、内容证据</td>
+</tr>
+<tr>
+<td>内容结构</td>
+<td>钩子、转折、卖点呈现、行动号召</td>
+</tr>
+<tr>
+<td>情绪触发点</td>
+<td>时间焦虑、效率认同、场景代入、社交认同</td>
+</tr>
+<tr>
+<td>核心卖点</td>
+<td>被强调的产品价值与证据</td>
+</tr>
+<tr>
+<td>爆款原因</td>
+<td>内容事实与策略推断分离</td>
+</tr>
+</tbody></table>
+<h4 id="业务规则">业务规则</h4>
+<ol>
+<li>所有结论必须引用原文片段，禁止编造数据。</li>
+<li>用户画像只能依据内容中的表达推断，并标注证据。</li>
+<li>爆款原因属于策略推断，需要区分“内容事实”和“策略推断”。</li>
+<li>拆解结果可一键保存到爆款库。</li>
+</ol>
+<h4 id="验收标准">验收标准</h4>
+<pre><code class="language-text">GIVEN 用户输入一条竞品TikTok脚本
+WHEN 点击“开始拆解”
+THEN Agent按六个步骤运行
+AND 输出用户画像、内容结构、情绪触发点、核心卖点、爆款原因
+AND 每个输出项均有对应内容依据
+AND 用户可以保存到爆款库
+</code></pre>
+<h3 id="f2-ai内容重写agent">F2 AI内容重写Agent</h3>
+<h4 id="优先级：p0-1">优先级：P0</h4>
+<h4 id="用户故事-1">用户故事</h4>
+<p>作为品牌社媒负责人，我希望一次选择多个市场批量生成内容变体，以便一份Brief产出多个市场的可用内容，而不是逐市场重复翻译和改写。</p>
+<h4 id="功能描述-1">功能描述</h4>
+<p>用户基于爆款拆解结果或原始内容，选择目标市场与平台，Agent生成多个本地化内容变体。</p>
+<h4 id="输入-1">输入</h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>爆款拆解结果/原始内容</td>
+<td>是</td>
+<td>来自F1或用户输入</td>
+</tr>
+<tr>
+<td>目标市场</td>
+<td>是</td>
+<td>多选，默认美国、英国、日本，可选新加坡</td>
+</tr>
+<tr>
+<td>目标平台</td>
+<td>是</td>
+<td>TikTok、Instagram、YouTube Shorts</td>
+</tr>
+<tr>
+<td>变体数量</td>
+<td>否</td>
+<td>每个市场生成2个或3个</td>
+</tr>
+</tbody></table>
+<h4 id="输出-1">输出</h4>
+<p>每个市场输出2至3个内容变体，包含：</p>
+<table>
+<thead>
+<tr>
+<th>输出项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内容正文</td>
+<td>本地化后的文案</td>
+</tr>
+<tr>
+<td>市场标签</td>
+<td>US、UK、JP、SG</td>
+</tr>
+<tr>
+<td>平台标签</td>
+<td>目标平台</td>
+</tr>
+<tr>
+<td>保留卖点</td>
+<td>未被删除或弱化的核心卖点</td>
+</tr>
+<tr>
+<td>本地化改动</td>
+<td>表达方式、用户场景、文化适配说明</td>
+</tr>
+</tbody></table>
+<h4 id="业务规则-1">业务规则</h4>
+<ol>
+<li>不得删除或弱化核心卖点。</li>
+<li>不得新增产品事实，如价格、功效、认证。</li>
+<li>必须做文化适配，避免直译、翻译腔和当地禁忌。</li>
+<li>每个变体必须说明“保留什么、改了什么、为什么改”。</li>
+</ol>
+<h4 id="验收标准-1">验收标准</h4>
+<pre><code class="language-text">GIVEN 已完成爆款拆解
+WHEN 选择美国、英国、日本三个市场和2个变体数量
+AND 点击“生成变体”
+THEN 生成6个内容变体
+AND 每个变体带市场标签、平台标签、保留卖点和本地化改动
+</code></pre>
+<h3 id="f3-品牌知识库">F3 品牌知识库</h3>
+<h4 id="优先级：p0-2">优先级：P0</h4>
+<h4 id="用户故事-2">用户故事</h4>
+<p>作为品牌负责人，我希望把品牌定位、产品卖点、目标市场、语气和禁忌维护在一个知识库中，以便AI生成内容始终符合品牌调性。</p>
+<h4 id="功能描述-2">功能描述</h4>
+<p>品牌知识库支持品牌信息编辑、卖点维护、市场维护、禁忌维护，并在生成和评估时作为上下文约束。</p>
+<h4 id="字段">字段</h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>品牌名称</td>
+<td>品牌展示名称</td>
+</tr>
+<tr>
+<td>品牌定位</td>
+<td>品牌一句话定位</td>
+</tr>
+<tr>
+<td>目标人群</td>
+<td>核心用户群</td>
+</tr>
+<tr>
+<td>品牌语气</td>
+<td>语气与表达约束</td>
+</tr>
+<tr>
+<td>产品卖点</td>
+<td>可增删的核心卖点列表</td>
+</tr>
+<tr>
+<td>目标市场</td>
+<td>可增删的市场列表</td>
+</tr>
+<tr>
+<td>品牌禁忌</td>
+<td>可增删的表达禁忌</td>
+</tr>
+</tbody></table>
+<h4 id="业务规则-2">业务规则</h4>
+<ol>
+<li>每次生成任务自动读取品牌知识并注入上下文。</li>
+<li>质量评估时执行品牌调性校验。</li>
+<li>品牌知识修改后立即生效，并在当前任务中可见。</li>
+</ol>
+<h4 id="验收标准-2">验收标准</h4>
+<pre><code class="language-text">GIVEN 用户在品牌知识库新增一个产品卖点
+WHEN 保存品牌知识并进入内容重写
+THEN 生成内容中可看到该卖点被保留
+AND 品牌名称在侧边栏同步更新
+</code></pre>
+<h3 id="f4-内容质量评估">F4 内容质量评估</h3>
+<h4 id="优先级：p0-3">优先级：P0</h4>
+<h4 id="用户故事-3">用户故事</h4>
+<p>作为增长操盘手，我希望生成内容在发布前获得吸引力、转化潜力和平台适配度评分，以便提前发现低质量内容并完成修改。</p>
+<h4 id="功能描述-3">功能描述</h4>
+<p>对指定内容变体进行三维评分，输出分数、原因、修改建议和最终结论。</p>
+<h4 id="输出-2">输出</h4>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>评估重点</th>
+<th>分值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>吸引力</td>
+<td>钩子强度、情绪价值、信息密度</td>
+<td>0至100</td>
+</tr>
+<tr>
+<td>转化潜力</td>
+<td>卖点清晰度、证据强度、行动号召</td>
+<td>0至100</td>
+</tr>
+<tr>
+<td>平台适配度</td>
+<td>平台格式、语言风格、社区规则</td>
+<td>0至100</td>
+</tr>
+</tbody></table>
+<h4 id="结论规则">结论规则</h4>
+<ol>
+<li>平均分不低于80：通过。</li>
+<li>平均分70至79：需修改。</li>
+<li>平均分低于70：不建议发布。</li>
+</ol>
+<h4 id="验收标准-3">验收标准</h4>
+<pre><code class="language-text">GIVEN 用户选择一个已生成的内容变体
+WHEN 点击“开始评估”
+THEN 输出三个维度的评分
+AND 每个分数附原因与原文引用
+AND 输出“通过/需修改/不建议发布”结论
+AND 修改建议具体到可执行
+</code></pre>
+<h3 id="f5-agent工作流">F5 Agent工作流</h3>
+<h4 id="优先级：p0-4">优先级：P0</h4>
+<h4 id="功能描述-4">功能描述</h4>
+<p>所有Agent任务按照统一六步工作流运行：</p>
+<pre><code class="language-text">输入
+  ↓
+Prompt处理
+  ↓
+知识检索
+  ↓
+LLM生成
+  ↓
+质量检查
+  ↓
+输出
+</code></pre>
+<h4 id="界面要求">界面要求</h4>
+<ol>
+<li>侧边栏显示当前任务状态。</li>
+<li>进度条实时展示运行进度。</li>
+<li>Agent运行日志记录每个步骤及完成时间。</li>
+<li>运行期间主操作按钮禁用，防止重复提交。</li>
+<li>运行完成后恢复可操作状态。</li>
+</ol>
+<h4 id="验收标准-4">验收标准</h4>
+<pre><code class="language-text">GIVEN 用户点击“开始拆解”
+WHEN Agent开始运行
+THEN 侧边栏逐步显示输入解析、Prompt处理、知识检索、LLM生成、质量检查、输出
+AND 运行日志追加对应记录
+AND 页面不出现重复提交
+</code></pre>
+<h3 id="f6-内容管理与交付">F6 内容管理与交付</h3>
+<h4 id="优先级：p1">优先级：P1</h4>
+<h4 id="功能描述-5">功能描述</h4>
+<p>支持爆款模板沉淀、内容记录、确认交付、复制内容和导出JSON。</p>
+<h4 id="业务规则-3">业务规则</h4>
+<ol>
+<li>爆款库：保存拆解模板，可重新加载使用。</li>
+<li>内容记录：保存已确认交付的内容、市场、平台、评分和状态。</li>
+<li>导出JSON：导出当前任务、品牌知识、爆款库和内容记录。</li>
+<li>新建任务：清空当前任务内容，品牌知识库保留。</li>
+</ol>
+<h3 id="f7-官网转化">F7 官网转化</h3>
+<h4 id="优先级：p1-1">优先级：P1</h4>
+<h4 id="功能描述-6">功能描述</h4>
+<p>产品官网首页用于展示BrandPilot AI的产品定位、Agent工作流、核心能力、模拟指标、定价与转化入口。</p>
+<h4 id="注册弹窗">注册弹窗</h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工作邮箱</td>
+<td>是</td>
+<td>邮箱格式校验</td>
+</tr>
+<tr>
+<td>品牌名称</td>
+<td>是</td>
+<td>非空校验</td>
+</tr>
+<tr>
+<td>目标市场</td>
+<td>是</td>
+<td>单选，默认美国</td>
+</tr>
+</tbody></table>
+<h4 id="验收标准-5">验收标准</h4>
+<pre><code class="language-text">GIVEN 用户点击“Start free”
+WHEN 填写邮箱、品牌名称和目标市场并提交
+THEN 显示“Workspace ready”
+AND 可点击“Open Agent workspace”进入Agent原型
+</code></pre>
+<h2 id="6-页面与交互需求">6. 页面与交互需求</h2>
+<h3 id="61-页面清单">6.1 页面清单</h3>
+<table>
+<thead>
+<tr>
+<th>页面</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent工作台</td>
+<td>拆解、重写、评估、交付四步流程</td>
+</tr>
+<tr>
+<td>品牌知识库</td>
+<td>品牌信息与知识维护</td>
+</tr>
+<tr>
+<td>爆款库</td>
+<td>已保存的爆款模板</td>
+</tr>
+<tr>
+<td>内容记录</td>
+<td>已交付内容列表</td>
+</tr>
+</tbody></table>
+<h3 id="62-关键交互状态">6.2 关键交互状态</h3>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>空状态</td>
+<td>明确提示用户下一步操作</td>
+</tr>
+<tr>
+<td>加载状态</td>
+<td>Agent运行日志与进度条可见</td>
+</tr>
+<tr>
+<td>成功状态</td>
+<td>输出结果带状态标签</td>
+</tr>
+<tr>
+<td>错误状态</td>
+<td>表单校验错误明确提示</td>
+</tr>
+<tr>
+<td>交付状态</td>
+<td>内容记录中状态为“已交付”</td>
+</tr>
+</tbody></table>
+<h3 id="63-响应式要求">6.3 响应式要求</h3>
+<table>
+<thead>
+<tr>
+<th>屏幕宽度</th>
+<th>要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1440及以上</td>
+<td>桌面完整布局</td>
+</tr>
+<tr>
+<td>768至960</td>
+<td>侧边栏转为横向导航</td>
+</tr>
+<tr>
+<td>414及以下</td>
+<td>单列布局，按钮触达区域不小于44px</td>
+</tr>
+</tbody></table>
+<h2 id="7-数据与埋点需求">7. 数据与埋点需求</h2>
+<h3 id="71-核心数据模型">7.1 核心数据模型</h3>
+<pre><code class="language-json">{
+  &quot;brand&quot;: {
+    &quot;name&quot;: &quot;Aurora&quot;,
+    &quot;positioning&quot;: &quot;为都市通勤族设计的便携随行咖啡机&quot;,
+    &quot;audience&quot;: &quot;25至35岁通勤白领、露营与旅行爱好者&quot;,
+    &quot;tone&quot;: &quot;简洁、真实、带一点幽默&quot;,
+    &quot;sellingPoints&quot;: [&quot;20秒快速萃取&quot;, &quot;0.3kg轻便随行&quot;],
+    &quot;markets&quot;: [&quot;US&quot;, &quot;UK&quot;, &quot;JP&quot;, &quot;SG&quot;],
+    &quot;taboos&quot;: [&quot;不夸大功效&quot;, &quot;不用绝对化表达&quot;]
+  },
+  &quot;teardown&quot;: {
+    &quot;userProfile&quot;: [],
+    &quot;contentStructure&quot;: [],
+    &quot;emotionTriggers&quot;: [],
+    &quot;coreSellingPoints&quot;: [],
+    &quot;viralityReasons&quot;: []
+  },
+  &quot;variants&quot;: [
+    {
+      &quot;market&quot;: &quot;JP&quot;,
+      &quot;platform&quot;: &quot;TikTok&quot;,
+      &quot;body&quot;: &quot;本地化文案&quot;,
+      &quot;keptSellingPoints&quot;: [],
+      &quot;changedAspects&quot;: [],
+      &quot;score&quot;: null
+    }
+  ]
+}
+</code></pre>
+<h3 id="72-埋点事件">7.2 埋点事件</h3>
+<table>
+<thead>
+<tr>
+<th>事件名称</th>
+<th>触发时机</th>
+<th>关键参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>teardown_started</td>
+<td>点击开始拆解</td>
+<td>source_platform、account_type</td>
+</tr>
+<tr>
+<td>teardown_completed</td>
+<td>拆解完成</td>
+<td>selling_points_count</td>
+</tr>
+<tr>
+<td>rewrite_generated</td>
+<td>生成变体</td>
+<td>markets、platform、variant_count</td>
+</tr>
+<tr>
+<td>quality_scored</td>
+<td>评估完成</td>
+<td>attractiveness、conversion、platform_fit</td>
+</tr>
+<tr>
+<td>content_approved</td>
+<td>确认交付</td>
+<td>market、platform、score</td>
+</tr>
+<tr>
+<td>register_submitted</td>
+<td>官网注册提交</td>
+<td>market、brand_name</td>
+</tr>
+</tbody></table>
+<h2 id="8-非功能需求">8. 非功能需求</h2>
+<h3 id="81-性能">8.1 性能</h3>
+<ol>
+<li>首屏加载时间不超过2秒。</li>
+<li>用户点击响应时间不超过100毫秒。</li>
+<li>Agent运行过程动画保持流畅，不阻塞页面操作。</li>
+<li>页面图片使用懒加载。</li>
+</ol>
+<h3 id="82-兼容性">8.2 兼容性</h3>
+<ol>
+<li>支持Chrome、Safari、Edge最新版本。</li>
+<li>支持桌面、平板、移动端响应式布局。</li>
+<li>不依赖外部网络资源，可离线演示。</li>
+</ol>
+<h3 id="83-可访问性">8.3 可访问性</h3>
+<ol>
+<li>正文文本与背景对比度满足WCAG AA。</li>
+<li>所有交互元素可键盘操作，并显示可见焦点。</li>
+<li>触控目标不小于44px。</li>
+<li>支持系统“减少动态效果”设置。</li>
+</ol>
+<h3 id="84-数据与安全">8.4 数据与安全</h3>
+<ol>
+<li>MVP阶段数据保存在浏览器本地，不涉及服务端存储。</li>
+<li>邮箱字段进行格式校验，不采集敏感信息。</li>
+<li>导出JSON仅包含演示数据。</li>
+</ol>
+<h2 id="9-验收与发布检查">9. 验收与发布检查</h2>
+<h3 id="91-功能验收清单">9.1 功能验收清单</h3>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>爆款拆解可完成并可保存模板</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>多市场批量生成正常</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>品牌知识库增删改查正常</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>质量评估输出三维评分</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>Agent运行日志可见</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>内容记录与导出JSON正常</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>官网注册弹窗可跳转Agent原型</td>
+<td>通过</td>
+</tr>
+</tbody></table>
+<h3 id="92-交付前检查">9.2 交付前检查</h3>
+<ol>
+<li>桌面1440、平板768、移动端414、375、320布局无横向溢出。</li>
+<li>无按钮文字换行。</li>
+<li>无控制台报错。</li>
+<li>截图与最新原型一致。</li>
+<li>模拟指标均有明确标注。</li>
+</ol>
+<h2 id="10-指标与mvp验证">10. 指标与MVP验证</h2>
+<h3 id="101-验证假设">10.1 验证假设</h3>
+<p>出海品牌内容团队使用Agent后，可以在保持品牌调性的前提下，显著提升多语言社媒内容生产效率。</p>
+<h3 id="102-测试用户">10.2 测试用户</h3>
+<table>
+<thead>
+<tr>
+<th>用户类型</th>
+<th>人数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>品牌社媒负责人</td>
+<td>3人</td>
+</tr>
+<tr>
+<td>内容创作者</td>
+<td>4人</td>
+</tr>
+<tr>
+<td>增长操盘手</td>
+<td>2人</td>
+</tr>
+<tr>
+<td>本地化/翻译角色</td>
+<td>1人</td>
+</tr>
+</tbody></table>
+<h3 id="103-测试任务">10.3 测试任务</h3>
+<ol>
+<li>上传竞品TikTok脚本，完成爆款拆解。</li>
+<li>使用拆解模板和品牌知识库，一次生成美国、英国、日本三个市场变体。</li>
+<li>针对TikTok和Instagram生成内容变体。</li>
+<li>使用质量评估评分并修改到“通过”。</li>
+<li>完成满意度问卷与15分钟访谈。</li>
+</ol>
+<h3 id="104-模拟验证指标">10.4 模拟验证指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>人工基线</th>
+<th>Agent模拟目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单条多语言内容生产时间</td>
+<td>90至120分钟</td>
+<td>30至45分钟</td>
+</tr>
+<tr>
+<td>人工修改次数</td>
+<td>3至4轮</td>
+<td>不超过2轮</td>
+</tr>
+<tr>
+<td>首版通过率</td>
+<td>约40%</td>
+<td>不低于75%</td>
+</tr>
+<tr>
+<td>品牌调性一致率</td>
+<td>依人而异</td>
+<td>不低于80%</td>
+</tr>
+<tr>
+<td>单次Brief产出变体数</td>
+<td>1至2个</td>
+<td>6至9个</td>
+</tr>
+<tr>
+<td>用户满意度</td>
+<td>无AI对照</td>
+<td>4分以上（5分制）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>说明：以上均为模拟目标值，非真实商业数据。</p>
+</blockquote>
+<h2 id="11-里程碑与迭代计划">11. 里程碑与迭代计划</h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>内容</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V0.1</td>
+<td>四大Agent功能、多市场批量生成、品牌知识库、质量评估、内容记录</td>
+<td>已完成</td>
+</tr>
+<tr>
+<td>V0.2</td>
+<td>高表现内容自动回流爆款库</td>
+<td>待开发</td>
+</tr>
+<tr>
+<td>V0.3</td>
+<td>品牌调性评分与人工评审记录</td>
+<td>待开发</td>
+</tr>
+<tr>
+<td>V0.4</td>
+<td>接入发布后数据，形成增长飞轮</td>
+<td>待开发</td>
+</tr>
+</tbody></table>
+<h2 id="12-风险与依赖">12. 风险与依赖</h2>
+<table>
+<thead>
+<tr>
+<th>风险</th>
+<th>影响</th>
+<th>应对</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>真实LLM输出质量不稳定</td>
+<td>内容质量下降</td>
+<td>保留质量评估与人工确认</td>
+</tr>
+<tr>
+<td>文化适配主观性强</td>
+<td>不同市场接受度差异大</td>
+<td>引入本地审校角色参与验证</td>
+</tr>
+<tr>
+<td>MVP样本量小</td>
+<td>指标代表性不足</td>
+<td>通过评分一致率与访谈交叉验证</td>
+</tr>
+<tr>
+<td>品牌知识维护成本高</td>
+<td>用户不愿持续维护</td>
+<td>支持批量导入和默认模板</td>
+</tr>
+<tr>
+<td>模拟数据被误认为真实数据</td>
+<td>影响可信度</td>
+<td>所有指标明确标注模拟属性</td>
+</tr>
+</tbody></table>
+<h2 id="13-附录">13. 附录</h2>
+<h3 id="131-prompt模板索引">13.1 Prompt模板索引</h3>
+<table>
+<thead>
+<tr>
+<th>模板</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>爆款内容拆解Prompt</td>
+<td>输出用户画像、结构、情绪点、卖点、爆款原因</td>
+</tr>
+<tr>
+<td>AI内容重写Prompt</td>
+<td>保留卖点，按市场、平台、人群重写内容</td>
+</tr>
+<tr>
+<td>内容质量评估Prompt</td>
+<td>三维评分并输出原因与修改建议</td>
+</tr>
+</tbody></table>
+<h3 id="132-相关文件">13.2 相关文件</h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docs/full-solution.md</code></td>
+<td>完整产品方案</td>
+</tr>
+<tr>
+<td><code>docs/portfolio-pages.md</code></td>
+<td>20页作品集逐页脚本</td>
+</tr>
+<tr>
+<td><code>agent-app/index.html</code></td>
+<td>可交互Agent原型</td>
+</tr>
+<tr>
+<td><code>landing/index.html</code></td>
+<td>BrandPilot AI产品官网</td>
+</tr>
+</tbody></table>
+</article>
+    <div class="doc-footer">陈莹莹 · AI产品经理作品集</div>
+  </main>
+</div>
+</body>
+</html>

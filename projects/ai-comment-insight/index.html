@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InsightPulse · AI海外用户声音洞察</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="studio-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="brand-mark"><i data-lucide="radar"></i></span>
+        <div class="brand-text">
+          <strong>InsightPulse</strong>
+          <span>用户声音洞察 Agent</span>
+        </div>
+      </div>
+      <div class="view-title">
+        <span>用户声音洞察工作台</span>
+        <span class="engine-chip">本地模拟引擎</span>
+      </div>
+      <div class="top-actions">
+        <button class="btn ghost" id="exportBtn">
+          <i data-lucide="file-code"></i><span>JSON</span>
+        </button>
+        <button class="btn ghost" id="exportMdBtn">
+          <i data-lucide="file-text"></i><span>PRD</span>
+        </button>
+        <button class="btn ghost" id="exportPdfBtn">
+          <i data-lucide="printer"></i><span>PDF</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="studio-layout">
+      <aside class="pipeline-panel">
+        <div class="outline-head">
+          <span class="mini-label">Agent Pipeline</span>
+          <strong id="productName">Aurora 便携咖啡机</strong>
+        </div>
+        <div class="pipeline-list">
+          <a class="pipeline-node" href="#report"><span class="node-dot"></span><span class="node-text"><b>Data Understanding</b><small>数据理解</small></span></a>
+          <a class="pipeline-node" href="#report"><span class="node-dot"></span><span class="node-text"><b>Insight Analysis</b><small>情感与聚类</small></span></a>
+          <a class="pipeline-node" href="#report"><span class="node-dot"></span><span class="node-text"><b>Product Strategy</b><small>产品策略</small></span></a>
+          <a class="pipeline-node" href="#report"><span class="node-dot"></span><span class="node-text"><b>Growth Content</b><small>增长内容</small></span></a>
+          <div class="pipeline-human"><span class="node-dot human"></span><span class="node-text"><b>Human</b><small>人工确认</small></span></div>
+        </div>
+      </aside>
+
+      <main class="dash-canvas">
+        <div class="empty-state" id="emptyState">
+          <i data-lucide="radar"></i>
+          <p>等待评论洞察任务</p>
+        </div>
+        <div class="report hidden" id="report">
+          <div class="report-head">
+            <div>
+              <span class="mini-label">洞察报告</span>
+              <h2 id="reportTitle">评论洞察分析</h2>
+            </div>
+            <span class="status-chip status-ok" id="reportStatus">分析完成</span>
+          </div>
+
+          <div class="summary-card">
+            <h3>洞察总结</h3>
+            <p id="reportSummary">分析完成后生成总结</p>
+          </div>
+
+          <div class="overview-grid">
+            <div class="overview-card">
+              <span>评论总数</span>
+              <b id="statTotal">0</b>
+            </div>
+            <div class="overview-card">
+              <span>负面占比</span>
+              <b id="statNegative">0%</b>
+            </div>
+            <div class="overview-card">
+              <span>高频痛点</span>
+              <b id="statPain">0</b>
+            </div>
+            <div class="overview-card">
+              <span>洞察机会</span>
+              <b id="statOpportunity">0</b>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h3>情感分布</h3>
+            <div class="sentiment-list" id="sentimentList"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>痛点聚类</h3>
+            <div class="pain-grid" id="painGrid"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>市场机会</h3>
+            <div class="opportunity-grid" id="opportunityGrid"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>内容选题建议</h3>
+            <div class="topic-list" id="topicList"></div>
+          </div>
+
+          <div class="section-block">
+            <h3>评论明细</h3>
+            <div class="detail-list" id="detailList"></div>
+          </div>
+        </div>
+      </main>
+
+      <aside class="inspector">
+        <div class="field">
+          <label for="reviewInput">评论 / 社媒反馈数据</label>
+          <textarea id="reviewInput" spellcheck="false">Love the size, perfect for travel. Battery dies too fast though.
+Great coffee but the cup is really small.
+Takes longer than advertised to heat water.
+Perfect for camping. Wish it came with a cleaning brush.
+The seal leaks in my bag sometimes.
+Very easy to use, but the app is confusing.
+Compact and fast, highly recommend.
+Poor battery life after a week.
+The instructions are hard to follow.
+Nice design, but it spills when I shake it.
+Great for the office, just needs a bigger cup option.
+Charging takes forever and the cable is short.</textarea>
+        </div>
+        <div class="field">
+          <label for="csvInput">CSV文件上传</label>
+          <input type="file" id="csvInput" accept=".csv,text/csv">
+        </div>
+        <div class="field">
+          <label for="sourceSelect">数据源</label>
+          <select id="sourceSelect">
+            <option value="Amazon评论">Amazon评论</option>
+            <option value="TikTok评论">TikTok评论</option>
+            <option value="Reddit反馈">Reddit反馈</option>
+            <option value="客服反馈">客服反馈</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="marketSelect">目标市场</label>
+            <select id="marketSelect">
+              <option value="US">美国</option>
+              <option value="UK">英国</option>
+              <option value="JP">日本</option>
+              <option value="SG">新加坡</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rangeSelect">时间范围</label>
+            <select id="rangeSelect">
+              <option value="近7天">近7天</option>
+              <option value="近30天">近30天</option>
+              <option value="近90天">近90天</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="productInput">产品名称</label>
+          <input id="productInput" value="Aurora 便携咖啡机">
+        </div>
+        <button class="btn primary block" id="analyzeBtn">
+          <i data-lucide="scan-search"></i><span>开始分析</span>
+        </button>
+        <div class="pipeline-card">
+          <div class="pipeline-title">
+            <i data-lucide="workflow"></i><span>Agent运行</span>
+          </div>
+          <div class="pipeline-stage" id="pipelineStage">待命</div>
+          <div class="pipeline-bar"><span id="pipelineBar"></span></div>
+          <div class="agent-log" id="agentLog">
+            <div class="log-empty">等待分析任务</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="../ai-content-growth/agent-app/vendor/lucide.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
