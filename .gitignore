@@ -1,3 +1,8 @@
 .DS_Store
 .finesse/
 node_modules/
+agent-backend/.venv/
+agent-backend/.env
+.env
+__pycache__/
+*.pyc

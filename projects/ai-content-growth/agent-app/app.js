@@ -2,6 +2,9 @@
   'use strict';
 
   const STORAGE_KEY = 'agent-growth-state-v1';
+  let AGENT_API_URL = window.AGENT_API_URL || localStorage.getItem('agentApiUrl') || '';
+
+  let backendEngine = null;
 
   const DEFAULT_STATE = {
     brand: {
@@ -25,6 +28,47 @@
   const state = loadState();
 
   const $ = (id) => document.getElementById(id);
+
+  async function checkBackend() {
+    const chip = document.getElementById('engineChip');
+    if (!AGENT_API_URL) {
+      backendEngine = 'mock';
+      if (chip) chip.textContent = '本地模拟引擎';
+      return;
+    }
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 1500);
+      const res = await fetch(`${AGENT_API_URL}/health`, { signal: controller.signal });
+      clearTimeout(timer);
+      if (res.ok) {
+        const data = await res.json();
+        backendEngine = data.engine || 'mock';
+        if (chip) chip.textContent = backendEngine === 'mock' ? '本地模拟引擎' : '真实LLM引擎';
+        return;
+      }
+    } catch (err) {
+      // backend offline
+    }
+    backendEngine = 'mock';
+    if (chip) chip.textContent = '本地模拟引擎';
+  }
+
+  async function callBackend(task, payload) {
+    if (backendEngine === 'mock') return null;
+    try {
+      const res = await fetch(`${AGENT_API_URL}/api/agent/run`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task, ...payload }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data && data.ok ? data.data : null;
+    } catch (err) {
+      return null;
+    }
+  }
 
   const MARKET_LOCALIZATION = {
     US: {
@@ -163,7 +207,7 @@
     barEl.style.width = '100%';
     appendLog(`${taskLabel} 完成`, 'done');
     await sleep(160);
-    onDone();
+    await onDone();
     stageEl.textContent = '待命';
     barEl.style.width = '0%';
   }
@@ -390,7 +434,7 @@
     const variant = state.variants[index];
     if (!variant) return;
     const platform = $('evalPlatform').value;
-    const result = evaluateVariant(variant, platform);
+    const result = variant.score || evaluateVariant(variant, platform);
     variant.score = result;
     $('evalEmpty').classList.add('hidden');
     $('evalOutput').classList.remove('hidden');
@@ -659,8 +703,17 @@
         return;
       }
       $('teardownBtn').disabled = true;
-      await runAgent('爆款拆解', () => {
-        state.teardown = buildTeardown(input, $('sourcePlatform').value, $('sourceAccount').value);
+      await runAgent('爆款拆解', async () => {
+        const remote = await callBackend('teardown', {
+          input,
+          platform: $('sourcePlatform').value,
+          account: $('sourceAccount').value,
+        });
+        if (remote) {
+          state.teardown = { ...remote, id: Date.now(), createdAt: new Date().toISOString() };
+        } else {
+          state.teardown = buildTeardown(input, $('sourcePlatform').value, $('sourceAccount').value);
+        }
         state.variants = [];
         saveState();
         renderTeardown();
@@ -690,14 +743,17 @@
       }
       $('rewriteBtn').disabled = true;
       const count = Number(document.querySelector('#variantCount .seg.active').dataset.value);
-      await runAgent('内容重写', () => {
-        state.variants = buildVariants(
-          state.teardown,
+      await runAgent('内容重写', async () => {
+        const remote = await callBackend('rewrite', {
+          teardown: state.teardown,
           markets,
-          $('rewritePlatform').value,
+          platform: $('rewritePlatform').value,
           count,
-          state.brand
-        );
+          brand: state.brand,
+        });
+        state.variants = remote && Array.isArray(remote)
+          ? remote.map((v, i) => ({ ...v, id: Date.now() + i }))
+          : buildVariants(state.teardown, markets, $('rewritePlatform').value, count, state.brand);
         state.selectedVariantIndex = 0;
         saveState();
         renderVariantList();
@@ -709,7 +765,19 @@
 
     $('evalBtn').addEventListener('click', async () => {
       $('evalBtn').disabled = true;
-      await runAgent('质量评估', () => {
+      await runAgent('质量评估', async () => {
+        const index = Number($('evalVariant').value || 0);
+        const variant = state.variants[index];
+        if (variant) {
+          const remote = await callBackend('evaluate', {
+            body: variant.body,
+            platform: $('evalPlatform').value,
+            marketLabel: variant.marketLabel,
+            keptSellingPoints: variant.keptSellingPoints,
+            changedAspects: variant.changedAspects,
+          });
+          if (remote) variant.score = remote;
+        }
         renderEval();
         refreshIcons();
         toast('评估完成');
@@ -753,6 +821,22 @@
 
     $('exportBtn').addEventListener('click', exportJson);
     $('newTaskBtn').addEventListener('click', newTask);
+
+    $('engineConfigBtn').addEventListener('click', () => {
+      const current = AGENT_API_URL || 'http://127.0.0.1:8787';
+      const value = window.prompt('请输入Agent后端地址（留空则使用本地模拟引擎）', current);
+      if (value === null) return;
+      const trimmed = value.trim();
+      if (trimmed) {
+        localStorage.setItem('agentApiUrl', trimmed);
+        AGENT_API_URL = trimmed;
+      } else {
+        localStorage.removeItem('agentApiUrl');
+        AGENT_API_URL = '';
+      }
+      checkBackend();
+      toast('引擎配置已更新');
+    });
 
     $('saveBrandBtn').addEventListener('click', () => {
       state.brand.name = $('brandName').value.trim() || 'Aurora';
@@ -873,6 +957,7 @@
   }
 
   function init() {
+    checkBackend();
     bindEvents();
     renderAll();
   }

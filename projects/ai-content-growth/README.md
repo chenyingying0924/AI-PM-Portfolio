@@ -39,3 +39,26 @@ https://用户名.github.io/仓库名/agent-app/
 
 3. 上传前请确认 `landing/dist/` 已提交，否则官网会白屏。
 4. 个人作品集建议同时保留：产品官网、可交互Agent原型、20页PDF作品集、PRD、完整方案文档。
+
+## 真实LLM接入
+
+Agent原型支持连接真实LLM后端：
+
+```text
+agent-backend/
+```
+
+后端优先使用LangChain调用OpenAI兼容模型，未配置API Key时自动回退本地模拟引擎。
+
+启动方式：
+
+```bash
+cd agent-backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+export OPENAI_API_KEY="sk-xxx"
+python app.py
+```
+
+前端启动后会自动检测 `http://127.0.0.1:8787`，连接成功时顶部状态显示“真实LLM引擎”。

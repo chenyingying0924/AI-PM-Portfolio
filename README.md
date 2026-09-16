@@ -9,6 +9,7 @@
 │   ├── ai-content-growth/             项目1：AI出海内容增长助手 Agent
 │   ├── ai-comment-insight/            项目2：AI海外用户声音洞察 Agent
 │   └── ai-prd-assistant/              项目3：AI产品需求文档助手
+├── agent-backend/                     真实LLM后端（LangChain + OpenAI兼容接口）
 ```
 
 ## 作品集入口

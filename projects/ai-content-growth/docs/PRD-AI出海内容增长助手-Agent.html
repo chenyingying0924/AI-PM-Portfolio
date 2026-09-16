@@ -321,6 +321,7 @@ body {
 <a class="toc-h3" href="#102-测试用户">10.2 测试用户</a>
 <a class="toc-h3" href="#103-测试任务">10.3 测试任务</a>
 <a class="toc-h3" href="#104-模拟验证指标">10.4 模拟验证指标</a>
+<a class="toc-h3" href="#真实llm接入设计">真实LLM接入设计</a>
 <a class="" href="#11-里程碑与迭代计划">11. 里程碑与迭代计划</a>
 <a class="" href="#12-风险与依赖">12. 风险与依赖</a>
 <a class="" href="#13-附录">13. 附录</a>
@@ -545,7 +546,7 @@ body {
 </tr>
 <tr>
 <td>真实LLM模型接入</td>
-<td>MVP使用本地模拟引擎验证流程</td>
+<td>已预留LangChain后端，未配置API Key时回退本地模拟引擎</td>
 </tr>
 <tr>
 <td>视频内容生成</td>
@@ -1184,6 +1185,14 @@ AND 可点击“Open Agent workspace”进入Agent原型
 <blockquote>
 <p>说明：以上均为模拟目标值，非真实商业数据。</p>
 </blockquote>
+<h3 id="真实llm接入设计">真实LLM接入设计</h3>
+<p>MVP完成后，Agent工作流已预留真实LLM后端：</p>
+<ul>
+<li>后端使用LangChain连接OpenAI兼容模型。</li>
+<li>未配置API Key时自动回退本地模拟引擎。</li>
+<li>前端自动检测后端服务，连接成功后状态显示“真实LLM引擎”。</li>
+<li>后续可将LangChain替换为Coze、Dify等平台工作流。</li>
+</ul>
 <h2 id="11-里程碑与迭代计划">11. 里程碑与迭代计划</h2>
 <table>
 <thead>
@@ -1200,16 +1209,21 @@ AND 可点击“Open Agent workspace”进入Agent原型
 </tr>
 <tr>
 <td>V0.2</td>
+<td>接入LangChain真实LLM后端，支持OpenAI兼容模型</td>
+<td>已完成</td>
+</tr>
+<tr>
+<td>V0.3</td>
 <td>高表现内容自动回流爆款库</td>
 <td>待开发</td>
 </tr>
 <tr>
-<td>V0.3</td>
+<td>V0.4</td>
 <td>品牌调性评分与人工评审记录</td>
 <td>待开发</td>
 </tr>
 <tr>
-<td>V0.4</td>
+<td>V0.5</td>
 <td>接入发布后数据，形成增长飞轮</td>
 <td>待开发</td>
 </tr>

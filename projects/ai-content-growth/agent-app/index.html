@@ -50,9 +50,12 @@
       <header class="topbar">
         <div class="view-title">
           <span id="viewTitle">Agent工作台</span>
-          <span class="engine-chip">MVP模拟引擎</span>
+          <span class="engine-chip" id="engineChip">连接检测中</span>
         </div>
         <div class="top-actions">
+          <button class="btn ghost" id="engineConfigBtn" title="配置真实LLM后端">
+            <i data-lucide="settings"></i><span>配置引擎</span>
+          </button>
           <button class="btn ghost" id="exportBtn" title="导出JSON">
             <i data-lucide="download"></i><span>导出JSON</span>
           </button>
