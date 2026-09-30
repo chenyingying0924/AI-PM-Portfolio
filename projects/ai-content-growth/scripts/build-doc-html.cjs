@@ -338,7 +338,7 @@ function buildHtml(title, tag, toc, content) {
       <h1>${title}</h1>
     </div>
     <article class="doc-content">${content}</article>
-    <div class="doc-footer">陈莹莹 · AI产品经理作品集</div>
+    <div class="doc-footer">陈莹莹 · AI产品作品集</div>
   </main>
 </div>
 </body>
