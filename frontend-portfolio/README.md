@@ -25,7 +25,7 @@
 └── README.md
 ```
 
-首页区块顺序：**首屏巨字 → 素材走廊 → 旗舰项目 → 关于 → 其他项目（堆叠卡）→ 技能栈 → 联系**
+首页区块顺序：**首屏巨字 → 旗舰项目 → 关于 → 其他项目（堆叠卡）→ 技能栈 → 联系**
 
 ## 本地查看
 
@@ -83,8 +83,6 @@ python3 -m http.server 8080
 | 位置 | 数组 | 用途 |
 | --- | --- | --- |
 | `index.html` | `PROJECTS` | 其他项目卡片（`icon` 对应 `ICON` 里的图标名，`hue` 是主色） |
-| `index.html` | `SHOTS` | 素材走廊的图片 tile（`src` + `cap` 图注） |
-| `index.html` | `TAGS` | 素材走廊的标签 tile（`t` 主标题 + `s` 副标题） |
 | `index.html` | `SKILLS` | 技能面板，每项格式 `["技能名", 百分比]` |
 | `index.html` | `HERO_STATS`（写在 HTML 里） | 首屏四个数字，改 `data-count` 与 `data-suffix` |
 | `vision-qc-case.html` | `SAMPLES` | 6 张样例图的分数、结论与说明 |
@@ -100,7 +98,6 @@ python3 -m http.server 8080
 | 手法 | 实现方式 |
 | --- | --- |
 | **流体巨字 + 金属渐变字** | `clamp()` 字号 + `background-clip:text` 线性渐变；浅色/深色各一套渐变令牌保证对比度 |
-| **素材走廊（Marquee）** | 两行内容三倍化，围绕基线按页面滚动量反向位移；`will-change:transform` + 单帧 rAF 批量写入 |
 | **堆叠项目卡** | `position:sticky` 阶梯错位 + 按容器滚动进度计算 `scale`（1 → 0.94/0.97）与 `brightness` 压暗 |
 | **字符级滚动揭示** | 「关于」段落逐字拆成 `<span>`，按段落滚动进度与字符序号计算淡入阈值（0.16 → 1） |
 | **指针光斑 / 磁吸 / 3D 倾斜** | `pointermove` + `translate3d`；仅在有 hover 能力的设备启用 |

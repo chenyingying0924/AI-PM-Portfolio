@@ -170,31 +170,9 @@ html[data-theme="dark"] .fx-grain{opacity:.05}
 .stat b{display:block;font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:900;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
 .stat span{display:block;margin-top:7px;font-size:12.6px;color:var(--muted);font-weight:500}
 
-/* ============================================================
-   7. Marquee —— 滚动驱动的视觉走廊
-   ============================================================ */
-.marquee{position:relative;padding:clamp(54px,7vw,96px) 0 clamp(34px,4vw,54px);overflow:hidden}
-.mq-head{display:flex;align-items:center;gap:14px;margin-bottom:clamp(20px,2.6vw,32px);flex-wrap:wrap}
-.mq-head h2{font-size:clamp(1.15rem,1.9vw,1.5rem);font-weight:800;letter-spacing:-.02em}
-.mq-head p{font-size:13.2px;color:var(--muted);font-weight:500}
-.mq-rows{display:flex;flex-direction:column;gap:12px}
-.mq-row{display:flex;gap:12px;width:max-content;margin-left:-900px;will-change:transform}
-.mq-tile{width:clamp(180px,20vw,272px);height:clamp(140px,15.6vw,212px);flex:none;border-radius:18px;
-  overflow:hidden;position:relative;border:1px solid var(--border);background:var(--surface);
-  box-shadow:var(--shadow);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
-.mq-tile:hover{transform:translateY(-6px) scale(1.02);box-shadow:var(--shadow-lg);z-index:2}
-.mq-tile img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
-.mq-tile:hover img{transform:scale(1.06)}
-.mq-tile .cap{position:absolute;left:0;right:0;bottom:0;padding:16px 13px 9px;font-size:11.6px;font-weight:650;
-  color:#fff;letter-spacing:.02em;background:linear-gradient(transparent,rgba(0,0,0,.72))}
-/* 标签型 tile */
-.mq-tile.tag-tile{display:grid;place-content:center;gap:8px;padding:20px;text-align:center;
-  background:linear-gradient(150deg,var(--surface),var(--surface-2))}
-.mq-tile.tag-tile em{font-style:normal;font-size:clamp(1rem,1.7vw,1.28rem);font-weight:850;letter-spacing:-.02em}
-.mq-tile.tag-tile small{font-size:11.2px;color:var(--muted);font-weight:550;letter-spacing:.06em;text-transform:uppercase}
 
 /* ============================================================
-   8. 区块通用
+   7. 区块通用
    ============================================================ */
 section{position:relative}
 .sec{padding:clamp(64px,9vw,124px) 0}
@@ -224,7 +202,7 @@ section{position:relative}
 .mini svg{width:13px;height:13px}
 
 /* ============================================================
-   9. Featured —— 旗舰项目
+   8. Featured —— 旗舰项目
    ============================================================ */
 .feature{display:grid;grid-template-columns:1fr 1.06fr;gap:clamp(26px,3.6vw,54px);align-items:center;
   padding:clamp(24px,3vw,40px);border-radius:var(--r);border:1px solid var(--border);
@@ -250,7 +228,7 @@ section{position:relative}
 .shot-clip img{width:100%;object-fit:cover;object-position:top}
 
 /* ============================================================
-   10. Stack Cards —— 堆叠缩放项目卡
+   9. Stack Cards —— 堆叠缩放项目卡
    ============================================================ */
 .stack-wrap{position:relative}
 .stack-item{position:sticky;top:calc(92px + var(--i) * 26px);margin-bottom:clamp(20px,3vw,34px);
@@ -280,7 +258,7 @@ section{position:relative}
 .card-links{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border)}
 
 /* ============================================================
-   11. About —— 字符级滚动揭示
+   10. About —— 字符级滚动揭示
    ============================================================ */
 .about{padding:clamp(64px,9vw,124px) 0}
 .about h2{font-weight:900;letter-spacing:-.038em;line-height:1.02;font-size:var(--fs-h2);margin-bottom:clamp(26px,3.6vw,44px)}
@@ -295,7 +273,7 @@ section{position:relative}
   padding-top:clamp(24px,3vw,36px);border-top:1px solid var(--border)}
 
 /* ============================================================
-   12. Skills
+   11. Skills
    ============================================================ */
 .skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.8vw,22px)}
 .panel{border-radius:var(--r);border:1px solid var(--border);background:var(--surface);padding:clamp(20px,2.4vw,30px);
@@ -313,7 +291,7 @@ section{position:relative}
   transition:width 1.15s var(--ease)}
 
 /* ============================================================
-   13. Contact & Footer
+   12. Contact & Footer
    ============================================================ */
 .contact{border-radius:clamp(24px,3vw,36px);border:1px solid var(--border);background:var(--surface);
   padding:clamp(34px,5vw,72px) clamp(24px,4vw,58px);text-align:center;box-shadow:var(--shadow-lg);
@@ -333,13 +311,13 @@ footer{padding:clamp(34px,4vw,54px) 0;border-top:1px solid var(--border);margin-
   color:var(--muted);font-size:12.6px;text-align:center;line-height:1.9}
 
 /* ============================================================
-   14. Reveal 工具类
+   13. Reveal 工具类
    ============================================================ */
 .js .rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
 .js .rv.in{opacity:1;transform:none}
 
 /* ============================================================
-   15. 响应式
+   14. 响应式
    ============================================================ */
 @media (max-width:960px){
   .feature{grid-template-columns:1fr}
@@ -356,11 +334,10 @@ footer{padding:clamp(34px,4vw,54px) 0;border-top:1px solid var(--border);margin-
 }
 @media (max-width:420px){
   .stats{grid-template-columns:1fr}
-  .mq-tile{width:172px;height:134px}
 }
 
 /* ============================================================
-   16. 减少动效 / 无 JS 兜底
+   15. 减少动效 / 无 JS 兜底
    ============================================================ */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -368,7 +345,7 @@ footer{padding:clamp(34px,4vw,54px) 0;border-top:1px solid var(--border);margin-
   .rv{opacity:1!important;transform:none!important;transition:none!important}
   .hero h1 .ln > span{transform:none!important;transition:none!important}
   .ch{opacity:1!important;transition:none!important}
-  .mq-tile,.mq-tile img,.panel,.btn,.pill{transition:none!important}
+  .panel,.btn,.pill{transition:none!important}
   .fill{transition:none!important}
 }
 /* 无 JS 兜底已由 .js 前缀正向控制：动画初始态只在 JS 可用时生效 */
@@ -448,20 +425,6 @@ footer{padding:clamp(34px,4vw,54px) 0;border-top:1px solid var(--border);margin-
       </div>
     </div>
   </header>
-
-  <!-- ============ MARQUEE ============ -->
-  <section class="marquee" id="gallery" aria-label="项目素材走廊">
-    <div class="container">
-      <div class="mq-head rv">
-        <h2>素材走廊</h2>
-        <p>视觉质检 Agent 的真实样例图与运行界面 —— 滚动页面，它们跟着走</p>
-      </div>
-    </div>
-    <div class="mq-rows">
-      <div class="mq-row" id="mq1"></div>
-      <div class="mq-row" id="mq2"></div>
-    </div>
-  </section>
 
   <!-- ============ FEATURED ============ -->
   <section class="sec" id="featured">
@@ -625,51 +588,6 @@ footer{padding:clamp(34px,4vw,54px) 0;border-top:1px solid var(--border);margin-
   }
   var LINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 4h6v6M20 4l-8.6 8.6"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 
-  /* ---------------- Marquee ---------------- */
-  var SHOTS = [
-    { src: "assets/06-dark-oversized.png", cap: "背景过暗 · 尺寸超限" },
-    { src: "assets/vision-qc-ui.png",      cap: "质检 Agent 运行界面" },
-    { src: "assets/03-marketing-text.png", cap: "促销文字 · 合规违规" },
-    { src: "assets/01-perfect-white.png",  cap: "标准白底主图 · 通过" },
-    { src: "assets/04-watermark-logo.png", cap: "未授权水印" },
-    { src: "assets/02-fine-pass.png",      cap: "轻微瑕疵 · 需优化" },
-    { src: "assets/05-lowres-messy.png",   cap: "低分辨率 · 版式杂乱" }
-  ];
-  var TAGS = [
-    { t: "Node.js",   s: "node:http 零依赖" },
-    { t: "SSE",       s: "实时进度流" },
-    { t: "React",     s: "组件化开发" },
-    { t: "Webpack",   s: "构建配置" },
-    { t: "GSAP",      s: "ScrollTrigger" },
-    { t: "Agent",     s: "多智能体协作" },
-    { t: "PRD",       s: "需求拆解" },
-    { t: "Prompt",    s: "工程与质量约束" }
-  ];
-  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
-  var tiles = [];
-  SHOTS.forEach(function (s) {
-    tiles.push('<figure class="mq-tile"><img src="' + s.src + '" alt="' + esc(s.cap) + '" loading="lazy" decoding="async">' +
-               '<figcaption class="cap">' + esc(s.cap) + '</figcaption></figure>');
-  });
-  var tagTiles = TAGS.map(function (g) {
-    return '<div class="mq-tile tag-tile"><em>' + esc(g.t) + '</em><small>' + esc(g.s) + '</small></div>';
-  });
-  // 交替排列：图片 / 标签（以较长者为准，无重复）
-  var line = [];
-  var maxLen = Math.max(tiles.length, tagTiles.length);
-  for (var i = 0; i < maxLen; i++) {
-    if (tiles[i]) line.push(tiles[i]);
-    if (tagTiles[i]) line.push(tagTiles[i]);
-  }
-  var half = Math.ceil(line.length / 2);
-  var rowA = line.slice(0, half).join("");
-  var rowB = line.slice(half).join("");
-  var mq1 = document.getElementById("mq1"), mq2 = document.getElementById("mq2");
-  // 各自三倍化 —— 位移上限约数百 px，三倍宽足够不露白
-  mq1.innerHTML = rowA + rowB + rowA;
-  mq2.innerHTML = rowB + rowA + rowB;
-  mq1.setAttribute("aria-hidden", "true");
-  mq2.setAttribute("aria-hidden", "true");
 
   /* ---------------- Projects (stack cards) ---------------- */
   var PROJECTS = [
@@ -825,12 +743,11 @@ footer{padding:clamp(34px,4vw,54px) 0;border-top:1px solid var(--border);margin-
     counters.forEach(function (el) { el.textContent = (Number(el.dataset.count) || 0) + (el.dataset.suffix || ""); });
   }
 
-  /* ---------------- 滚动驱动：进度条 / 导航 / marquee / 堆叠缩放 / 字符揭示 ---------------- */
+  /* ---------------- 滚动驱动：进度条 / 导航 / 堆叠缩放 / 字符揭示 ---------------- */
   var nav = document.getElementById("nav");
   var progress = document.getElementById("progress");
   var spot = document.getElementById("spot");
   var heroEl = document.querySelector(".hero");
-  var marqueeSec = document.getElementById("gallery");
   var stackItems = Array.prototype.slice.call(document.querySelectorAll(".stack-item"));
   var ticking = false;
   var stackMetrics = null;
@@ -855,13 +772,6 @@ footer{padding:clamp(34px,4vw,54px) 0;border-top:1px solid var(--border);margin-
     nav.classList.toggle("stuck", y > 12);
     progress.style.transform = "scaleX(" + (max > 0 ? clamp01(y / max) : 0) + ")";
 
-    // Marquee：围绕 900px 基线双向偏移（两行反向）。
-    // 行宽为内容三倍，基线两侧都有充足内容，任何位移下都不会露出空白。
-    var mRect = marqueeSec.getBoundingClientRect();
-    var MQ_BASE = 900;
-    var shift = Math.min(MQ_BASE, Math.max(0, (vh - mRect.top) * 0.3));
-    mq1.style.transform = "translate3d(" + (MQ_BASE + shift).toFixed(1) + "px,0,0)";
-    mq2.style.transform = "translate3d(" + (MQ_BASE - shift).toFixed(1) + "px,0,0)";
 
     // 堆叠卡片：用容器整体进度驱动，卡 i 在 [i/total, 1] 区间缩到 targetScale
     var total = stackItems.length;
