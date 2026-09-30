@@ -2,17 +2,30 @@
 
 个人作品集，**纯静态、零依赖、无构建步骤**，可直接部署到 GitHub Pages。
 
+## 🚀 线上地址（可直接放进简历 / 发给 HR）
+
+| 作品集 | 链接 |
+| --- | --- |
+| **前端工程作品集**（本套） | https://chenyingying0924.github.io/AI-PM-Portfolio/frontend-portfolio/ |
+| └ 视觉质检 Agent 完整案例页 | https://chenyingying0924.github.io/AI-PM-Portfolio/frontend-portfolio/vision-qc-case.html |
+| **AI 产品作品集** | https://chenyingying0924.github.io/AI-PM-Portfolio/ |
+
+> 备用地址（云沙箱，用于临时预览）：https://98b990b117364c15ae71bb50fc685de5.app.workbuddy.host
+
+
 ## 文件结构
 
 ```
 作品演示集/
-├── index.html            作品集首页（旗舰项目 + 其他项目 + 技能 + 联系）
+├── index.html            作品集首页（单文件，含样式与逻辑）
 ├── vision-qc-case.html   视觉质检 Agent 完整案例页（真实截图 + 6 张样例真实验证结果）
 ├── assets/
 │   ├── vision-qc-ui.png      视觉质检 Agent 真实运行截图（1600×2550）
 │   └── 01~06-*.png           6 张样例图（真实调用模型评测过）
 └── README.md
 ```
+
+首页区块顺序：**首屏巨字 → 素材走廊 → 旗舰项目 → 关于 → 其他项目（堆叠卡）→ 技能栈 → 联系**
 
 ## 本地查看
 
@@ -70,6 +83,8 @@ python3 -m http.server 8080
 | 位置 | 数组 | 用途 |
 | --- | --- | --- |
 | `index.html` | `PROJECTS` | 其他项目卡片（`icon` 对应 `ICON` 里的图标名，`hue` 是主色） |
+| `index.html` | `SHOTS` | 素材走廊的图片 tile（`src` + `cap` 图注） |
+| `index.html` | `TAGS` | 素材走廊的标签 tile（`t` 主标题 + `s` 副标题） |
 | `index.html` | `SKILLS` | 技能面板，每项格式 `["技能名", 百分比]` |
 | `index.html` | `HERO_STATS`（写在 HTML 里） | 首屏四个数字，改 `data-count` 与 `data-suffix` |
 | `vision-qc-case.html` | `SAMPLES` | 6 张样例图的分数、结论与说明 |
@@ -80,12 +95,30 @@ python3 -m http.server 8080
 
 ## 交互与设计
 
-- **浅色 / 深色 / 跟随系统**三态主题切换（两个页面共享选择，存 `localStorage`）
+### 视觉手法（全部为原生实现，零第三方库）
+
+| 手法 | 实现方式 |
+| --- | --- |
+| **流体巨字 + 金属渐变字** | `clamp()` 字号 + `background-clip:text` 线性渐变；浅色/深色各一套渐变令牌保证对比度 |
+| **素材走廊（Marquee）** | 两行内容三倍化，围绕基线按页面滚动量反向位移；`will-change:transform` + 单帧 rAF 批量写入 |
+| **堆叠项目卡** | `position:sticky` 阶梯错位 + 按容器滚动进度计算 `scale`（1 → 0.94/0.97）与 `brightness` 压暗 |
+| **字符级滚动揭示** | 「关于」段落逐字拆成 `<span>`，按段落滚动进度与字符序号计算淡入阈值（0.16 → 1） |
+| **指针光斑 / 磁吸 / 3D 倾斜** | `pointermove` + `translate3d`；仅在有 hover 能力的设备启用 |
+
+### 交互清单
+
+- **浅色 / 深色 / 跟随系统** 三态主题切换（两个页面共享选择，存 `localStorage`）
 - 顶部**滚动进度条**、导航栏滚动吸附加描边
-- 首屏数字**滚动计数**、区块**入场动画**（交错延迟）
-- 旗舰项目的大图**3D 倾斜 + 悬停回正**
-- 卡片**指针跟随光晕**、按钮**磁吸位移**
-- 已适配 `prefers-reduced-motion`；并提供 `<noscript>` 兜底，禁用 JS 也不会白屏
+- 首屏巨字**逐行上推入场**、数字**滚动计数**、区块**交错入场**
+- 旗舰项目大图**3D 倾斜 + 悬停回正**；卡片**指针跟随光晕**；按钮/胶囊**磁吸位移**
+
+### 工程细节
+
+- **零依赖、零外部请求**：不引字体 CDN、不引 JS 库，全部内联
+- 滚动计算集中在**单个 rAF 帧**内批量写入，容器尺寸只在初始化 / `resize` / `ResizeObserver` 时测量一次，避免逐帧强制同步布局
+- 滚动监听全部 `passive: true`
+- 适配 `prefers-reduced-motion`（关闭全部位移动画与逐字揭示）
+- **无 JS 兜底**：动画初始态由 `.js` 类正向控制，禁用脚本时所有内容依然完整可读（含技能区间距与堆叠区提示）
 
 ---
 
