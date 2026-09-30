@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>视觉质检 Agent · 项目案例</title>
+<meta name="description" content="视觉质检 Agent 项目案例：清单驱动的多模态图片质检工具，含真实运行截图与 6 张样例图的真实验证结果。">
+<style>
+:root{
+  --bg:#f5f6fa; --bg-soft:#eceef6; --surface:#fff; --glass:rgba(255,255,255,.72);
+  --text:#101219; --text-2:#3b4256; --muted:#6b7386;
+  --border:rgba(16,18,25,.09); --border-2:rgba(16,18,25,.16);
+  --shadow:0 1px 2px rgba(16,18,25,.04),0 12px 32px -12px rgba(16,18,25,.16);
+  --shadow-lg:0 2px 4px rgba(16,18,25,.05),0 30px 64px -22px rgba(16,18,25,.28);
+  --accent:#5457d6; --accent-2:#8b5cf6; --accent-3:#0d9488; --accent-soft:rgba(84,87,214,.10);
+  --ok:#0d9488; --warn:#d97706; --bad:#dc2626;
+  --grid-line:rgba(16,18,25,.045); --radius:18px; --maxw:1100px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html[data-theme="dark"]{
+  --bg:#08090e; --bg-soft:#0d0f16; --surface:#12141d; --glass:rgba(255,255,255,.045);
+  --text:#eef0f7; --text-2:#c3c8d8; --muted:#8d94a8;
+  --border:rgba(255,255,255,.10); --border-2:rgba(255,255,255,.20);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.7);
+  --shadow-lg:0 2px 6px rgba(0,0,0,.5),0 34px 74px -26px rgba(0,0,0,.85);
+  --accent:#8f92ff; --accent-2:#b794ff; --accent-3:#3fd6c6; --accent-soft:rgba(143,146,255,.14);
+  --ok:#3fd6c6; --warn:#fbbf24; --bad:#f87171;
+  --grid-line:rgba(255,255,255,.05);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  transition:background-color .4s var(--ease),color .4s var(--ease);
+}
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(56rem 56rem at 14% -12%,var(--accent-soft),transparent 60%),
+  radial-gradient(46rem 46rem at 90% 4%,rgba(139,92,246,.10),transparent 62%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:
+  linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 90% 55% at 50% 0%,#000 18%,transparent 76%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 55% at 50% 0%,#000 18%,transparent 76%);}
+.wrap{position:relative;z-index:1}
+.container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px) saturate(180%);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);background:var(--glass);
+  border-bottom:1px solid transparent;transition:border-color .3s var(--ease)}
+.nav.stuck{border-bottom-color:var(--border)}
+.nav-inner{display:flex;align-items:center;gap:16px;height:62px}
+.back{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--text-2);
+  font-size:14px;font-weight:600;padding:8px 14px;border-radius:10px;border:1px solid var(--border);
+  transition:all .22s var(--ease)}
+.back:hover{border-color:var(--accent);color:var(--accent)}
+.back svg{width:15px;height:15px}
+.nav-title{margin-left:auto;font-size:13.5px;color:var(--muted);font-weight:600}
+.theme-switch{display:flex;gap:2px;padding:3px;border-radius:11px;background:var(--bg-soft);border:1px solid var(--border)}
+.theme-switch button{width:30px;height:28px;border:0;background:transparent;cursor:pointer;border-radius:8px;
+  color:var(--muted);display:grid;place-items:center;transition:all .2s var(--ease)}
+.theme-switch button:hover{color:var(--text)}
+.theme-switch button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:var(--shadow)}
+.theme-switch svg{width:15px;height:15px}
+
+header.hero{padding:80px 0 44px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--accent);padding:6px 13px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--border)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent-3);box-shadow:0 0 0 3px rgba(13,148,136,.18)}
+h1{margin:22px 0 0;font-size:clamp(34px,5.4vw,56px);line-height:1.08;letter-spacing:-.035em;font-weight:800}
+.grad{background:linear-gradient(100deg,var(--accent) 6%,var(--accent-2) 54%,var(--accent-3) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{margin:22px 0 0;max-width:660px;font-size:17px;color:var(--muted)}
+.lede b{color:var(--text-2);font-weight:600}
+
+.metrics{margin-top:44px;display:grid;gap:1px;grid-template-columns:repeat(5,1fr);
+  background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.metric{background:var(--surface);padding:22px 18px}
+.metric b{display:block;font-size:27px;font-weight:800;letter-spacing:-.03em;line-height:1.15;
+  background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.metric span{display:block;margin-top:5px;font-size:12.6px;color:var(--muted)}
+
+section{padding:64px 0}
+.sec-head{margin-bottom:30px}
+.sec-head h2{margin:0;font-size:clamp(23px,3.1vw,32px);letter-spacing:-.03em;font-weight:800}
+.sec-head p{margin:9px 0 0;color:var(--muted);font-size:15px;max-width:660px}
+
+/* Browser frame for the real screenshot */
+.frame{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);
+  box-shadow:var(--shadow-lg)}
+.frame-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--bg-soft)}
+.tl{width:11px;height:11px;border-radius:50%;background:var(--border-2)}
+.frame-url{margin-left:8px;font-size:12.2px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 12px}
+.shot{display:block;width:100%;height:auto}
+.shot-wrap{max-height:640px;overflow:hidden;position:relative}
+.shot-wrap::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
+  background:linear-gradient(to bottom,transparent,var(--surface));pointer-events:none}
+.shot-hint{text-align:center;font-size:13px;color:var(--muted);margin-top:14px}
+.shot-hint a{color:var(--accent);font-weight:600;text-decoration:none}
+.shot-hint a:hover{text-decoration:underline}
+
+/* Sample grid */
+.samples{margin-top:6px;display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.sample{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s var(--ease)}
+.sample:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--border-2)}
+.sample .thumb{aspect-ratio:1/1;background:var(--bg-soft);display:grid;place-items:center;overflow:hidden;
+  border-bottom:1px solid var(--border)}
+.sample .thumb img{width:100%;height:100%;object-fit:contain;display:block}
+.sample .body{padding:18px 20px 20px}
+.sample .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sample .name{font-size:13px;font-weight:700;letter-spacing:-.01em}
+.sample .score{font-size:22px;font-weight:800;letter-spacing:-.03em}
+.sample .score i{font-size:12px;font-weight:600;font-style:normal;color:var(--muted);margin-left:2px}
+.sample .verdict{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+  padding:4px 11px;border-radius:999px;margin-top:13px}
+.v-warn{background:rgba(217,119,6,.12);color:var(--warn)}
+.v-bad{background:rgba(220,38,38,.12);color:var(--bad)}
+.sample .why{margin:12px 0 0;font-size:13.2px;color:var(--muted);line-height:1.6}
+.sample .why b{color:var(--text-2);font-weight:650}
+
+/* Architecture */
+.arch{margin-top:6px;display:grid;gap:18px;grid-template-columns:1fr 1fr}
+.node{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.node:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.node .kicker{font-size:11.8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.node h3{margin:9px 0 0;font-size:17.5px;letter-spacing:-.02em;font-weight:750}
+.node p{margin:11px 0 0;font-size:13.8px;color:var(--muted)}
+.node ul{margin:15px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.node li{position:relative;padding-left:19px;font-size:13.4px;color:var(--muted)}
+.node li::before{content:"";position:absolute;left:3px;top:8px;width:6px;height:6px;border-radius:2px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+.arrow-row{display:flex;align-items:center;justify-content:center;margin:22px 0;color:var(--muted);font-size:12.6px;font-weight:600}
+
+/* Notes */
+.notes{margin-top:6px;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);
+  border-radius:12px;padding:18px 20px}
+.note h4{margin:0 0 7px;font-size:14px;font-weight:700}
+.note p{margin:0;font-size:13.3px;color:var(--muted)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 12px;font-size:16.5px;letter-spacing:-.01em}
+pre{margin:0;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:16px 18px;overflow-x:auto;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.8px;line-height:1.7;color:var(--text-2)}
+
+footer{padding:34px 0 48px;text-align:center;font-size:12.8px;color:var(--muted);border-top:1px solid var(--border)}
+.rv{opacity:0;transform:translateY(20px)}
+.rv.in{opacity:1;transform:none;transition:opacity .8s var(--ease),transform .8s var(--ease)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1!important;transform:none!important}html{scroll-behavior:auto}}
+@media (max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.arch{grid-template-columns:1fr}
+  header.hero{padding:52px 0 34px}section{padding:48px 0}}
+</style>
+</head>
+<body>
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
+<div class="bg-fx"></div><div class="bg-grid"></div>
+
+<div class="wrap">
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a class="back" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+        返回作品集
+      </a>
+      <span class="nav-title">项目案例 · 视觉质检 Agent</span>
+      <div class="theme-switch" role="group" aria-label="主题切换">
+        <button type="button" data-mode="light" title="浅色" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"/></svg>
+        </button>
+        <button type="button" data-mode="dark" title="深色" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.5 14.4A8.6 8.6 0 1 1 9.6 3.5a7 7 0 0 0 10.9 10.9Z"/></svg>
+        </button>
+        <button type="button" data-mode="system" title="跟随系统" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2.6" y="4" width="18.8" height="12.6" rx="2"/><path d="M8.5 20.4h7"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="eyebrow rv"><span class="dot"></span>项目案例 · 独立开发 · 2026.09</div>
+      <h1 class="rv">视觉质检 Agent<br><span class="grad">让图片质检可解释、可复现</span></h1>
+      <p class="lede rv">
+        电商商品图有硬性质检规范，人工抽检几百张要数小时，不同人判得还不一样。这个工具的核心设计只有一句话：
+        <b>让多模态模型只负责"看"，把"判罚"交给一段可审计的规则代码。</b>
+        下面全部是真实运行的结果，不是示意图。
+      </p>
+
+      <div class="metrics rv">
+        <div class="metric"><b>4</b><span>套质检清单</span></div>
+        <div class="metric"><b>45</b><span>条判定规则</span></div>
+        <div class="metric"><b>50+</b><span>结构化事实字段</span></div>
+        <div class="metric"><b>51</b><span>项自动化用例全通过</span></div>
+        <div class="metric"><b>0</b><span>第三方运行时依赖</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      <div class="sec-head rv">
+        <h2>真实运行界面</h2>
+        <p>用 <code>deepseek-v4-flash-vision-exp</code> 对 6 张样例图的真实批量调用结果 —— 平均 77 分，4 张判定不合格。左侧是质检清单与复核记录，中间是逐条规则判定表，右侧是模型的执行轨迹。</p>
+      </div>
+      <div class="frame rv">
+        <div class="frame-bar">
+          <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+          <span class="frame-url">127.0.0.1:4599 &nbsp;·&nbsp; 本地服务 · 零依赖启动</span>
+        </div>
+        <div class="shot-wrap"><img class="shot" src="assets/vision-qc-ui.png" alt="视觉质检 Agent 运行界面截图" loading="lazy"></div>
+      </div>
+      <p class="shot-hint rv">截图较长，已裁切 —— 下方按张展示真实判定结果</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sec-head rv">
+        <h2>6 张样例图的真实验证结果</h2>
+        <p>每张图固定调用 1 次视觉模型，12 条规则共用这一次调用。分数为 0–100，按规则严重度加权计算。</p>
+      </div>
+      <div class="samples" id="samples"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sec-head rv">
+        <h2>为什么不让模型直接判"合格 / 不合格"</h2>
+        <p>这是整个项目的核心取舍，也是面试里我最想讲的一件事。</p>
+      </div>
+      <div class="arch">
+        <div class="node rv">
+          <div class="kicker">Layer 1 · 模型负责"看"</div>
+          <h3>输出结构化视觉事实</h3>
+          <p>一次调用返回 40+ 个归一化字段，而不是一句结论。字段词表由事实目录统一定义，提示词、界面、报告三处共用，不存在"改了清单忘了改提示词"的漂移。</p>
+          <ul>
+            <li>语义判断：模特姿态、材质细节、色差风险、构图平衡</li>
+            <li>像素级指标（分辨率、背景白度、主体色）<b>不交给模型</b>，由程序精确测量</li>
+            <li>实测值作为"既成事实"回填提示词，避免模型乱估</li>
+          </ul>
+        </div>
+        <div class="node rv">
+          <div class="kicker">Layer 2 · 规则负责"判"</div>
+          <h3>本地确定性规则引擎</h3>
+          <p>判罚在纯 JavaScript 里执行 —— 每个结论都能追到具体字段和阈值，改标准只需改一份 JSON，不需要改代码、不需要重训、不花一分钱 token。</p>
+          <ul>
+            <li>4 套清单共 45 条规则，<b>同一事实跨场景用不同阈值</b></li>
+            <li>按 high / medium / low 加权算分，取证失败项标为"未判定"而非硬判</li>
+            <li>人机回环：质检员可推翻判定，日志反向产出阈值调整建议</li>
+          </ul>
+        </div>
+      </div>
+      <div class="arrow-row rv">模型给"事实" &nbsp;→&nbsp; 规则给"结论" &nbsp;→&nbsp; 结论可追溯、可复现、可解释</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sec-head rv">
+        <h2>成本与性能</h2>
+        <p>成本是采购和运营一定会问的问题，所以它在项目里被算到"每一张图多少钱"。</p>
+      </div>
+      <div class="metrics rv" style="grid-template-columns:repeat(4,1fr)">
+        <div class="metric"><b>$0.0024</b><span>平均单张成本</span></div>
+        <div class="metric"><b>91%</b><span>缓存命中率</span></div>
+        <div class="metric"><b>1</b><span>单图模型调用次数</span></div>
+        <div class="metric"><b>~3.1k</b><span>单张消耗 tokens</span></div>
+      </div>
+      <div class="notes" style="margin-top:22px">
+        <div class="note rv"><h4>一张图只调一次模型</h4><p>所有规则共用同一次视觉调用，规则数量再增加也不增加成本；规则引擎本身是本地纯函数。</p></div>
+        <div class="note rv"><h4>结果按「图 + 清单 + 模型」哈希缓存</h4><p>SHA-256 定键，同图重跑秒出，调阈值时可以反复试而不重复计费。</p></div>
+        <div class="note rv"><h4>没有 Key 也能跑</h4><p>无 API Key 时自动进入兜底模式，用本地像素指标推断事实，并在报告里明确标注为兜底估计，绝不冒充模型判断。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sec-head rv">
+        <h2>已知边界</h2>
+        <p>这些是项目 README 里主动写明的限制，面试被追问时我会照实回答。</p>
+      </div>
+      <div class="notes">
+        <div class="note rv"><h4>单图色差仍是模型主观项</h4><p>真正的色差需要色卡与标准光源，单图里只是风险提示；只有组内色差才用得上实测 ΔE。</p></div>
+        <div class="note rv"><h4>ΔE 假设主体色可用一组平均 RGB 代表</h4><p>花色或渐变面料会被平均成中间色，此时 ΔE 偏大属于误报；更严谨的做法是比色直方图而非均值。</p></div>
+        <div class="note rv"><h4>JPEG / WebP 不做本地像素解码</h4><p>这两类图的实测指标会缺失，规则降级为「未判定」并提示人工复核 —— 宁可说不知道，也不猜。</p></div>
+        <div class="note rv"><h4>单次采样边界会翻盘</h4><p>实测同一张 500px 的图两次调用得到 88「需优化」与 87「不合格」，分数只差 1 分但结论不同。修法：降低温度，或只对临界样本多次采样取多数。</p></div>
+        <div class="note rv"><h4>样例图是自造矢量渲染图</h4><p>不是真实商家数据，所以「细节不可辨识」这类判断在样例上偏严格；目前也还没有真实使用方。</p></div>
+        <div class="note rv"><h4>一致性检查是整组一次调用</h4><p>图片多了会顶到上下文与成本上限（当前单批上限 12 张），尚未做跨批次的 SKU 一致性。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sec-head rv">
+        <h2>怎么本地跑起来</h2>
+        <p>项目零第三方依赖，任何装了 Node 20+ 的机器都能直接启动。</p>
+      </div>
+      <div class="card rv">
+        <h3>三步启动</h3>
+        <pre>cd vision-qc-agent
+npm start                  # 打开 http://127.0.0.1:4599
+# 无需 npm install（零依赖）；无 API Key 会自动进入演示兜底模式</pre>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">陈莹莹 · 视觉质检 Agent 项目案例 · 全部数据来自项目内可复现的运行记录</div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  var buttons = Array.prototype.slice.call(document.querySelectorAll(".theme-switch button"));
+
+  function apply(mode) {
+    root.setAttribute("data-theme", mode === "system" ? (mq.matches ? "dark" : "light") : mode);
+    buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.mode === mode)); });
+  }
+  var mode = "system";
+  try { mode = localStorage.getItem("portfolio-theme") || "system"; } catch (e) {}
+  apply(mode);
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.dataset.mode; apply(mode);
+      try { localStorage.setItem("portfolio-theme", mode); } catch (e) {}
+    });
+  });
+  var onScheme = function () { if (mode === "system") apply("system"); };
+  if (mq.addEventListener) mq.addEventListener("change", onScheme); else if (mq.addListener) mq.addListener(onScheme);
+
+  /* 真实运行数据：来自 reports/2026-09-17T06-39-24/batch.json（非 mock 真实调用） */
+  var SAMPLES = [
+    { img: "01-perfect-white.png", score: 88, verdict: "warn", fails: 2,
+      why: "模型判「细节不可辨识」—— 样例是矢量渲染图，没有材质纹理，这条在矢量图上偏严格。" },
+    { img: "02-fine-pass.png", score: 88, verdict: "warn", fails: 2,
+      why: "色差风险标为 high，细节同样不可辨识。" },
+    { img: "03-marketing-text.png", score: 74, verdict: "bad", fails: 4,
+      why: "抓出<b>画面文字量 heavy</b> —— 属于平台合规硬性违规。" },
+    { img: "04-watermark-logo.png", score: 75, verdict: "bad", fails: 4,
+      why: "检出<b>未授权水印 / 第三方 Logo</b>。" },
+    { img: "05-lowres-messy.png", score: 69, verdict: "bad", fails: 5,
+      why: "实测<b>背景白度 0%</b>、最短边仅 <b>520px</b>，背景杂乱。" },
+    { img: "06-dark-oversized.png", score: 67, verdict: "bad", fails: 5,
+      why: "实测<b>背景白度 0%</b>、布光判定为 <b>dim</b>（整体偏暗）。" }
+  ];
+  var LABEL = { warn: "需优化", bad: "不合格" };
+
+  document.getElementById("samples").innerHTML = SAMPLES.map(function (s) {
+    return [
+      '<article class="sample rv">',
+        '<div class="thumb"><img src="assets/' + s.img + '" alt="' + s.img + '" loading="lazy"></div>',
+        '<div class="body">',
+          '<div class="row">',
+            '<span class="name">' + s.img + '</span>',
+            '<span class="score">' + s.score + '<i>/100</i></span>',
+          '</div>',
+          '<span class="verdict ' + (s.verdict === "bad" ? "v-bad" : "v-warn") + '">',
+            LABEL[s.verdict] + " · " + s.fails + " 项未通过",
+          '</span>',
+          '<p class="why">' + s.why + '</p>',
+        '</div>',
+      '</article>'
+    ].join("");
+  }).join("");
+
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("stuck", window.scrollY > 12); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var items = Array.prototype.slice.call(document.querySelectorAll(".rv"));
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("in");
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
+    items.forEach(function (el, i) { el.style.transitionDelay = ((i % 6) * 55) + "ms"; io.observe(el); });
+  } else {
+    items.forEach(function (el) { el.classList.add("in"); });
+  }
+})();
+</script>
+</body>
+</html>
