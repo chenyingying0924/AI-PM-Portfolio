@@ -1084,7 +1084,7 @@ slides.push({
 
 slides.push({
   kicker: '18 · SIMULATED RESULTS',
-  title: '模拟验证指标与迭代方向',
+  title: '模拟验证目标与迭代方向',
   subtitle: '以下为MVP设计目标值，非真实商业数据。',
   body: `
     <div class="grid2">
@@ -1141,7 +1141,7 @@ slides.push({
         <ul>
           <li>完成可点击原型与Agent Demo</li>
           <li>招募10名目标用户跑验证任务</li>
-          <li>用真实内容数据替换模拟指标</li>
+          <li>用真实内容数据替换模拟验证目标</li>
         </ul>
       </div>
     </div>

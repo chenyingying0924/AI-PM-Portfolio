@@ -12,7 +12,6 @@ module.exports = {
   resolve: {
     modules: [
       path.resolve(__dirname, 'node_modules'),
-      '/Users/chenyingying/node_modules',
     ],
     extensions: ['.js'],
   },

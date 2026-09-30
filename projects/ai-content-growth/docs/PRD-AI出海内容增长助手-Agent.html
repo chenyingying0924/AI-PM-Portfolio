@@ -320,7 +320,7 @@ body {
 <a class="toc-h3" href="#101-验证假设">10.1 验证假设</a>
 <a class="toc-h3" href="#102-测试用户">10.2 测试用户</a>
 <a class="toc-h3" href="#103-测试任务">10.3 测试任务</a>
-<a class="toc-h3" href="#104-模拟验证指标">10.4 模拟验证指标</a>
+<a class="toc-h3" href="#104-模拟验证目标">10.4 模拟验证目标</a>
 <a class="toc-h3" href="#真实llm接入设计">真实LLM接入设计</a>
 <a class="" href="#11-里程碑与迭代计划">11. 里程碑与迭代计划</a>
 <a class="" href="#12-风险与依赖">12. 风险与依赖</a>
@@ -812,18 +812,16 @@ AND 修改建议具体到可执行
 <h3 id="f5-agent工作流">F5 Agent工作流</h3>
 <h4 id="优先级：p0-4">优先级：P0</h4>
 <h4 id="功能描述-4">功能描述</h4>
-<p>所有Agent任务按照统一六步工作流运行：</p>
-<pre><code class="language-text">输入
+<p>所有Agent任务按照统一五步工作流运行：</p>
+<pre><code class="language-text">输入 Brief
   ↓
-Prompt处理
+爆款结构提取
   ↓
-知识检索
+品牌知识检索
   ↓
-LLM生成
+本地化生成
   ↓
-质量检查
-  ↓
-输出
+质量闸门
 </code></pre>
 <h4 id="界面要求">界面要求</h4>
 <ol>
@@ -854,7 +852,7 @@ AND 页面不出现重复提交
 <h3 id="f7-官网转化">F7 官网转化</h3>
 <h4 id="优先级：p1-1">优先级：P1</h4>
 <h4 id="功能描述-6">功能描述</h4>
-<p>产品官网首页用于展示BrandPilot AI的产品定位、Agent工作流、核心能力、模拟指标、定价与转化入口。</p>
+<p>产品官网首页用于展示BrandPilot AI的产品定位、Agent工作流、核心能力、模拟验证目标、定价与转化入口。</p>
 <h4 id="注册弹窗">注册弹窗</h4>
 <table>
 <thead>
@@ -1104,7 +1102,7 @@ AND 可点击“Open Agent workspace”进入Agent原型
 <li>无按钮文字换行。</li>
 <li>无控制台报错。</li>
 <li>截图与最新原型一致。</li>
-<li>模拟指标均有明确标注。</li>
+<li>模拟验证目标均有明确标注。</li>
 </ol>
 <h2 id="10-指标与mvp验证">10. 指标与MVP验证</h2>
 <h3 id="101-验证假设">10.1 验证假设</h3>
@@ -1142,7 +1140,7 @@ AND 可点击“Open Agent workspace”进入Agent原型
 <li>使用质量评估评分并修改到“通过”。</li>
 <li>完成满意度问卷与15分钟访谈。</li>
 </ol>
-<h3 id="104-模拟验证指标">10.4 模拟验证指标</h3>
+<h3 id="104-模拟验证目标">10.4 模拟验证目标</h3>
 <table>
 <thead>
 <tr>

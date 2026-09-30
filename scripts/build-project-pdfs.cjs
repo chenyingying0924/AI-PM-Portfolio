@@ -330,7 +330,7 @@ const C_SECTIONS = [
   {
     kicker: '06 · USER JOURNEY',
     title: '用户使用流程',
-    subtitle: '六步完成从输入素材到PRD评审。',
+    subtitle: '五个 Agent 依次协作，从输入素材到 PRD 评审。',
     body: `
       <div class="flow">
         <div class="flow-step"><b>输入</b><span>需求素材</span></div>
